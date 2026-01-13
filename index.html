@@ -1,432 +1,736 @@
 <!doctype html>
-<html lang="uk">
+<html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Шаблон лендингу</title>
-  <meta name="description" content="Швидкий односторінковий сайт-шаблон." />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Alexis Data Systems — Excel & VBA automation, dashboards, and business tracking systems. Systems, not spreadsheets." />
+  <title>Alexis Data Systems — Olexandr Shliakhta</title>
+
   <style>
+    /* =======================
+       THEME TOKENS
+       ======================= */
     :root{
-      --bg:#0b1220; --card:#101a2e; --text:#eaf0ff; --muted:#a9b5d6;
-      --line:rgba(255,255,255,.10); --accent:#7c5cff; --accent2:#30d5c8;
-      --shadow:0 16px 40px rgba(0,0,0,.35);
-      --radius:18px;
-      --max:1100px;
+      --bg: #070A12;
+      --bg2:#0B1020;
+      --card: rgba(255,255,255,.06);
+      --card2: rgba(255,255,255,.08);
+      --line: rgba(255,255,255,.12);
+      --text:#EAF0FF;
+      --muted: rgba(234,240,255,.72);
+
+      --accent:#6D7CFF;
+      --accent2:#20D3C2;
+      --shadow: 0 16px 50px rgba(0,0,0,.45);
+      --shadow2: 0 12px 30px rgba(0,0,0,.28);
+      --radius: 18px;
+      --radius2: 22px;
+
+      --max: 1100px;
     }
+
+    /* Light theme overrides */
+    [data-theme="light"]{
+      --bg: #F6F8FF;
+      --bg2:#FFFFFF;
+      --card: rgba(15,23,42,.05);
+      --card2: rgba(15,23,42,.07);
+      --line: rgba(15,23,42,.12);
+      --text:#0B1222;
+      --muted: rgba(11,18,34,.72);
+
+      --accent:#4054FF;
+      --accent2:#0BB9AA;
+      --shadow: 0 16px 50px rgba(15,23,42,.12);
+      --shadow2: 0 12px 30px rgba(15,23,42,.10);
+    }
+
     *{box-sizing:border-box}
+    html,body{height:100%}
     body{
-      margin:0; font:16px/1.55 system-ui,-apple-system,Segoe UI,Roboto,Arial;
-      color:var(--text);
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans", "Apple Color Emoji","Segoe UI Emoji";
+      color: var(--text);
       background:
-        radial-gradient(1200px 600px at 20% 10%, rgba(124,92,255,.35), transparent 60%),
-        radial-gradient(900px 600px at 80% 20%, rgba(48,213,200,.25), transparent 60%),
-        radial-gradient(800px 500px at 60% 90%, rgba(124,92,255,.18), transparent 60%),
-        var(--bg);
+        radial-gradient(1000px 550px at 18% 20%, rgba(109,124,255,.25), transparent 60%),
+        radial-gradient(900px 520px at 75% 25%, rgba(32,211,194,.18), transparent 60%),
+        linear-gradient(180deg, var(--bg), var(--bg2));
+      overflow-x:hidden;
     }
+
     a{color:inherit; text-decoration:none}
-    .wrap{max-width:var(--max); margin:0 auto; padding:22px}
-    header{
+    .wrap{max-width:var(--max); margin:0 auto; padding:0 20px;}
+    .nav{
       position:sticky; top:0; z-index:50;
-      backdrop-filter: blur(10px);
-      background: linear-gradient(to bottom, rgba(11,18,32,.85), rgba(11,18,32,.25));
-      border-bottom:1px solid var(--line);
+      backdrop-filter: blur(14px);
+      background: linear-gradient(180deg, rgba(10,14,28,.72), rgba(10,14,28,.35));
+      border-bottom: 1px solid var(--line);
     }
-    .nav{display:flex; align-items:center; justify-content:space-between; gap:16px}
-    .logo{display:flex; align-items:center; gap:10px; font-weight:800; letter-spacing:.2px}
-    .dot{width:12px;height:12px;border-radius:50%;
-      background:linear-gradient(135deg,var(--accent),var(--accent2));
-      box-shadow:0 0 0 5px rgba(124,92,255,.12);
+    [data-theme="light"] .nav{
+      background: linear-gradient(180deg, rgba(255,255,255,.78), rgba(255,255,255,.55));
     }
-    .links{display:flex; gap:16px; flex-wrap:wrap; justify-content:flex-end}
-    .links a{color:var(--muted); padding:8px 10px; border-radius:10px}
-    .links a:hover{background:rgba(255,255,255,.06); color:var(--text)}
+
+    .navin{
+      display:flex; align-items:center; justify-content:space-between;
+      height:64px;
+    }
+    .brand{
+      display:flex; align-items:center; gap:10px; font-weight:700; letter-spacing:.2px;
+    }
+    .dot{
+      width:10px; height:10px; border-radius:999px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      box-shadow: 0 0 0 6px rgba(109,124,255,.10);
+    }
+    .navlinks{
+      display:flex; align-items:center; gap:18px;
+      font-size:14px;
+      color: var(--muted);
+    }
+    .navlinks a{padding:8px 10px; border-radius:12px;}
+    .navlinks a:hover{background: var(--card); color: var(--text);}
+
+    .navright{display:flex; align-items:center; gap:10px;}
     .btn{
-      display:inline-flex; align-items:center; justify-content:center; gap:8px;
-      padding:12px 16px; border-radius:14px; border:1px solid var(--line);
-      background:rgba(255,255,255,.06);
-      color:var(--text); font-weight:700;
-      box-shadow:0 10px 24px rgba(0,0,0,.22);
+      display:inline-flex; align-items:center; justify-content:center;
+      padding:10px 14px;
+      border-radius: 14px;
+      border:1px solid var(--line);
+      background: var(--card);
+      color: var(--text);
+      box-shadow: var(--shadow2);
+      font-weight:600;
+      font-size:14px;
+      gap:8px;
       cursor:pointer;
+      user-select:none;
+      transition: transform .15s ease, background .15s ease, border-color .15s ease;
     }
+    .btn:hover{transform: translateY(-1px); background: var(--card2);}
     .btn.primary{
-      border:0;
-      background:linear-gradient(135deg,var(--accent),var(--accent2));
-      color:#06101a;
+      border-color: transparent;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: #081024;
     }
-    .btn:hover{transform:translateY(-1px)}
-    .hero{padding:46px 0 20px}
-    .grid{
-      display:grid; grid-template-columns: 1.15fr .85fr; gap:22px;
+    .btn.primary:hover{filter: brightness(1.02);}
+
+    .iconbtn{
+      width:42px; height:42px; padding:0;
+      border-radius: 14px;
+    }
+
+    /* Hero */
+    .hero{padding:64px 0 28px;}
+    .heroGrid{
+      display:grid;
+      grid-template-columns: 1.15fr .85fr;
+      gap:22px;
       align-items:stretch;
     }
-    @media (max-width: 900px){ .grid{grid-template-columns:1fr} }
-    .h1{font-size:44px; line-height:1.12; margin:0 0 12px; letter-spacing:-.8px}
-    @media (max-width: 500px){ .h1{font-size:34px} }
-    .lead{color:var(--muted); margin:0 0 18px; font-size:18px}
-    .pillrow{display:flex; gap:10px; flex-wrap:wrap; margin:18px 0 22px}
-    .pill{
+    .heroCard{
       border:1px solid var(--line);
-      background:rgba(255,255,255,.05);
-      color:var(--muted);
-      padding:8px 12px; border-radius:999px; font-size:13px;
+      background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.04));
+      border-radius: var(--radius2);
+      box-shadow: var(--shadow);
+      padding:26px;
+      position:relative;
+      overflow:hidden;
     }
+    [data-theme="light"] .heroCard{
+      background: linear-gradient(180deg, rgba(255,255,255,.85), rgba(255,255,255,.65));
+    }
+
+    .pill{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:7px 10px;
+      border-radius:999px;
+      background: var(--card);
+      border:1px solid var(--line);
+      font-size:12px;
+      color: var(--muted);
+      margin-bottom:14px;
+    }
+    .h1{
+      font-size: 44px;
+      line-height:1.05;
+      margin:0 0 12px;
+      letter-spacing:-.6px;
+    }
+    .lead{
+      margin:0 0 18px;
+      color: var(--muted);
+      font-size:16px;
+      line-height:1.6;
+      max-width: 60ch;
+    }
+    .bullets{
+      display:flex; flex-wrap:wrap; gap:10px;
+      margin:16px 0 18px;
+    }
+    .chip{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:10px 12px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background: var(--card);
+      color: var(--muted);
+      font-size:13px;
+      white-space:nowrap;
+    }
+    .check{
+      width:18px; height:18px; border-radius:6px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      display:inline-flex; align-items:center; justify-content:center;
+      color:#071023;
+      font-weight:900;
+      font-size:12px;
+    }
+    .row{display:flex; gap:10px; flex-wrap:wrap; align-items:center;}
+    .mini{
+      display:grid; gap:10px;
+    }
+
+    /* Right card (Contact / Quick actions) */
+    .profileTop{
+      display:flex; align-items:center; justify-content:space-between;
+      gap:12px;
+      margin-bottom:10px;
+    }
+    .avatar{
+      width:42px; height:42px; border-radius:16px;
+      background: linear-gradient(135deg, rgba(109,124,255,.55), rgba(32,211,194,.45));
+      border:1px solid var(--line);
+      box-shadow: var(--shadow2);
+      display:flex; align-items:center; justify-content:center;
+      font-weight:800;
+      color:#061023;
+    }
+    [data-theme="light"] .avatar{color:#0b1222;}
+    .titleBlock{line-height:1.15;}
+    .name{font-weight:800; font-size:14px;}
+    .role{font-size:12px; color: var(--muted);}
+
     .card{
       border:1px solid var(--line);
-      background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
-      border-radius:var(--radius);
-      box-shadow:var(--shadow);
+      background: var(--card);
+      border-radius: var(--radius);
       padding:18px;
+      box-shadow: var(--shadow2);
     }
-    .kpis{display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-top:14px}
-    @media (max-width: 500px){ .kpis{grid-template-columns:1fr} }
-    .kpi{padding:12px; border:1px solid var(--line); border-radius:16px; background:rgba(0,0,0,.12)}
-    .kpi b{display:block; font-size:20px}
-    .kpi span{color:var(--muted); font-size:13px}
-    section{padding:22px 0}
-    .secTitle{display:flex; align-items:baseline; justify-content:space-between; gap:16px; margin-bottom:12px}
-    .secTitle h2{margin:0; font-size:26px}
-    .secTitle p{margin:0; color:var(--muted)}
-    .cards3{display:grid; grid-template-columns:repeat(3,1fr); gap:14px}
-    @media (max-width: 900px){ .cards3{grid-template-columns:1fr} }
-    .icon{
-      width:42px; height:42px; border-radius:14px;
-      background:linear-gradient(135deg, rgba(124,92,255,.25), rgba(48,213,200,.18));
-      display:grid; place-items:center; border:1px solid var(--line);
-      margin-bottom:10px;
-      font-weight:900;
+    .card h3{margin:0 0 8px; font-size:16px;}
+    .muted{color: var(--muted);}
+
+    .split2{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:12px;
+      margin-top:12px;
     }
-    .muted{color:var(--muted)}
-    .steps{display:grid; grid-template-columns:repeat(4,1fr); gap:12px}
-    @media (max-width: 900px){ .steps{grid-template-columns:1fr} }
-    .step{padding:14px; border:1px solid var(--line); border-radius:18px; background:rgba(0,0,0,.10)}
-    .step b{display:block; margin-bottom:6px}
-    .pricing{display:grid; grid-template-columns:repeat(3,1fr); gap:14px}
-    @media (max-width: 900px){ .pricing{grid-template-columns:1fr} }
-    .price{
-      position:relative;
-      padding:18px; border-radius:22px; border:1px solid var(--line);
-      background:rgba(0,0,0,.12);
+
+    /* Sections */
+    section{padding:44px 0;}
+    .secTitle{
+      margin-bottom:14px;
+      display:flex; align-items:flex-end; justify-content:space-between; gap:12px;
     }
-    .badge{
-      position:absolute; top:14px; right:14px;
-      font-size:12px; padding:6px 10px; border-radius:999px;
-      background:rgba(124,92,255,.18); border:1px solid rgba(124,92,255,.35);
-      color:var(--text);
+    .secTitle h2{
+      margin:0;
+      font-size:26px;
+      letter-spacing:-.3px;
     }
-    .amount{font-size:34px; font-weight:900; margin:8px 0}
-    ul{margin:10px 0 0; padding-left:18px; color:var(--muted)}
-    .faq{display:grid; grid-template-columns:1fr 1fr; gap:12px}
-    @media (max-width: 900px){ .faq{grid-template-columns:1fr} }
-    details{
+    .secTitle p{margin:0; color: var(--muted);}
+
+    .cards3{
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap:14px;
+    }
+
+    .list{
+      margin:10px 0 0;
+      padding-left:18px;
+      color: var(--muted);
+      line-height:1.55;
+    }
+
+    .kpi{
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap:12px;
+      margin-top:14px;
+    }
+    .kpi .k{
+      padding:14px;
+      border-radius: 16px;
       border:1px solid var(--line);
-      border-radius:18px;
-      background:rgba(0,0,0,.10);
-      padding:12px 14px;
+      background: var(--card);
     }
-    summary{cursor:pointer; font-weight:700}
+    .k .big{font-size:22px; font-weight:800;}
+    .k .small{font-size:12px; color: var(--muted); margin-top:6px;}
+
+    /* Portfolio grid */
+    .gallery{
+      display:grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap:10px;
+    }
+    .shot{
+      aspect-ratio: 16/10;
+      border-radius: 16px;
+      border:1px solid var(--line);
+      background:
+        radial-gradient(140px 100px at 30% 35%, rgba(109,124,255,.22), transparent 60%),
+        radial-gradient(140px 100px at 70% 60%, rgba(32,211,194,.18), transparent 60%),
+        var(--card);
+      box-shadow: var(--shadow2);
+      overflow:hidden;
+      display:flex; align-items:center; justify-content:center;
+      color: var(--muted);
+      font-size:13px;
+      padding:10px;
+      text-align:center;
+    }
+    .shot img{width:100%; height:100%; object-fit:cover; display:block;}
+
+    /* Footer */
     footer{
+      padding:22px 0 30px;
       border-top:1px solid var(--line);
-      color:var(--muted);
-      padding:22px 0 34px;
+      color: var(--muted);
+      font-size:13px;
     }
-    .small{font-size:13px}
-    .row{display:flex; gap:10px; flex-wrap:wrap}
-    .input{
-      width:100%;
-      padding:12px 12px;
-      border-radius:14px;
-      border:1px solid var(--line);
-      background:rgba(0,0,0,.16);
-      color:var(--text);
-      outline:none;
+    .foot{
+      display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap;
     }
-    .input:focus{border-color:rgba(124,92,255,.6)}
-    .toast{
-      position:fixed; right:16px; bottom:16px;
-      background:rgba(16,26,46,.95);
-      border:1px solid var(--line);
-      padding:12px 14px; border-radius:16px;
-      box-shadow:var(--shadow);
-      display:none;
-      max-width:360px;
+
+    /* Responsive */
+    @media (max-width: 980px){
+      .heroGrid{grid-template-columns:1fr; }
+      .cards3{grid-template-columns:1fr;}
+      .gallery{grid-template-columns: repeat(2, 1fr); }
+      .kpi{grid-template-columns:1fr;}
+      .h1{font-size:38px;}
+      .navlinks{display:none;}
     }
   </style>
 </head>
 
 <body>
-  <header>
-    <div class="wrap nav">
-      <div class="logo">
+  <!-- NAV -->
+  <div class="nav">
+    <div class="wrap navin">
+      <div class="brand">
         <span class="dot"></span>
-        <span>SiteKit</span>
+        <span>Alexis Data Systems</span>
       </div>
-      <nav class="links" aria-label="Навігація">
-        <a href="#features">Фічі</a>
-        <a href="#how">Як працює</a>
-        <a href="#pricing">Ціни</a>
-        <a href="#faq">FAQ</a>
-        <a class="btn" href="#contact">Контакти</a>
-      </nav>
+
+      <div class="navlinks">
+        <a href="#about">About</a>
+        <a href="#services">Services</a>
+        <a href="#cases">Cases</a>
+        <a href="#portfolio">Portfolio</a>
+        <a href="#contact">Contact</a>
+      </div>
+
+      <div class="navright">
+        <!-- Theme toggle -->
+        <button class="btn iconbtn" id="themeToggle" aria-label="Toggle theme" title="Toggle theme">
+          <span id="themeIcon">🌙</span>
+        </button>
+        <a class="btn primary" href="https://www.fiverr.com/Alex_E" target="_blank" rel="noopener">Hire on Fiverr</a>
+      </div>
     </div>
-  </header>
+  </div>
 
-  <main class="wrap">
-    <section class="hero">
-      <div class="grid">
-        <div>
-          <h1 class="h1">Швидкий, чистий лендинг — за 10 хвилин.</h1>
-          <p class="lead">
-            Один файл, адаптивний дизайн, приємні анімації та форма заявки.
-            Ідеально як демо для Fiverr або як стартовий шаблон під клієнта.
-          </p>
+  <!-- HERO -->
+  <header class="hero">
+    <div class="wrap heroGrid">
+      <div class="heroCard">
+        <div class="pill">Systems, not spreadsheets • Excel & Automation</div>
 
-          <div class="pillrow">
-            <span class="pill">✅ 1 файл</span>
-            <span class="pill">✅ Адаптивність</span>
-            <span class="pill">✅ CTA + форма</span>
-            <span class="pill">✅ Без бібліотек</span>
+        <h1 class="h1">Clean business systems built on Excel & Google Sheets.</h1>
+        <p class="lead">
+          I turn chaotic spreadsheets into structured, automated workflows that save time,
+          eliminate errors, and give you full control.
+        </p>
+
+        <div class="bullets">
+          <span class="chip"><span class="check">✓</span>No more manual reports</span>
+          <span class="chip"><span class="check">✓</span>No more spreadsheet chaos</span>
+          <span class="chip"><span class="check">✓</span>No more costly mistakes</span>
+        </div>
+
+        <div class="row">
+          <a class="btn primary" href="https://www.fiverr.com/Alex_E" target="_blank" rel="noopener">Get your system built</a>
+          <a class="btn" href="#cases">See cases</a>
+          <a class="btn" href="mailto:mr.schljakhta@gmail.com">Email me</a>
+        </div>
+
+        <div class="kpi">
+          <div class="k">
+            <div class="big">20+ yrs</div>
+            <div class="small">Excel learning & modeling</div>
           </div>
-
-          <div class="row">
-            <a class="btn primary" href="#contact">Запустити проєкт</a>
-            <button class="btn" id="copyBtn" type="button">Скопіювати шаблонний текст</button>
+          <div class="k">
+            <div class="big">Automation</div>
+            <div class="small">VBA + structured workflows</div>
           </div>
-
-          <div class="kpis">
-            <div class="kpi"><b>~2 KB</b><span>мін. JS</span></div>
-            <div class="kpi"><b>100%</b><span>mobile-friendly</span></div>
-            <div class="kpi"><b>0</b><span>залежностей</span></div>
+          <div class="k">
+            <div class="big">Control</div>
+            <div class="small">Reliable dashboards & tracking</div>
           </div>
+        </div>
+      </div>
+
+      <div class="heroCard">
+        <div class="profileTop">
+          <div style="display:flex; gap:12px; align-items:center;">
+            <div class="avatar">OS</div>
+            <div class="titleBlock">
+              <div class="name">Olexandr Shliakhta</div>
+              <div class="role">Excel & Business Automation Specialist</div>
+            </div>
+          </div>
+          <a class="btn" href="#contact">Contact</a>
         </div>
 
         <div class="card">
-          <h3 style="margin:0 0 10px;">Міні-конфігуратор</h3>
-          <p class="muted" style="margin:0 0 14px;">Введи назву бренду і нішу — і отримаєш готовий текст для hero-блоку.</p>
+          <h3>What I build</h3>
+          <p class="muted" style="margin:0;">
+            Automated Excel tools, dashboards, trackers, and team-friendly systems.
+          </p>
 
-          <label class="small muted">Назва</label>
-          <input class="input" id="brand" placeholder="Напр. ExcelDash" />
-
-          <div style="height:10px"></div>
-
-          <label class="small muted">Ніша</label>
-          <input class="input" id="niche" placeholder="Напр. шаблони Excel для бізнесу" />
-
-          <div style="height:14px"></div>
-
-          <button class="btn primary" id="genBtn" type="button">Згенерувати текст</button>
-
-          <div style="height:14px"></div>
-
-          <div class="card" style="padding:14px; background:rgba(0,0,0,.10)">
-            <div class="small muted">Результат:</div>
-            <div id="out" style="font-weight:800; margin-top:6px;">
-              SiteKit — шаблони, які легко адаптувати під клієнта.
-            </div>
-            <div class="muted small" id="out2" style="margin-top:6px;">
-              Зроби стильний лендинг та підготуй демо за один вечір.
-            </div>
+          <div class="split2">
+            <a class="btn primary" href="https://www.fiverr.com/Alex_E" target="_blank" rel="noopener">Fiverr</a>
+            <a class="btn" href="mailto:mr.schljakhta@gmail.com">Email</a>
           </div>
         </div>
-      </div>
-    </section>
 
-    <section id="features">
+        <div style="height:12px;"></div>
+
+        <div class="card">
+          <h3>Fast start</h3>
+          <p class="muted" style="margin:0 0 10px;">
+            Send your current spreadsheet + explain the goal. I’ll propose a clean structure and automation plan.
+          </p>
+          <ul class="list">
+            <li>Audit & simplify logic</li>
+            <li>Automate repetitive actions</li>
+            <li>Make it team-friendly</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <div class="wrap">
       <div class="secTitle">
-        <h2>Фічі</h2>
-        <p>Все, що треба для старту.</p>
+        <div>
+          <h2>About</h2>
+          <p>Focused on structure, reliability, and long-term maintainability.</p>
+        </div>
+      </div>
+
+      <div class="cards3" style="grid-template-columns: 1.3fr .85fr .85fr;">
+        <div class="card">
+          <h3>I build systems that keep your business under control.</h3>
+          <p class="muted" style="margin:0;">
+            I’ve been working with Excel since <b>2013</b> and studying it since <b>2005</b> — over <b>20 years</b>
+            of formulas, models, and automation logic.
+            <br><br>
+            Businesses don’t need “files”. They need <b>systems that don’t break</b>.
+            I help small businesses, startups, and teams turn messy spreadsheets into structured, automated workflows —
+            where reports build themselves, data stays clean, and people don’t fear mistakes.
+          </p>
+        </div>
+
+        <div class="card">
+          <h3>Core stack</h3>
+          <ul class="list">
+            <li>Excel (advanced formulas)</li>
+            <li>VBA automation</li>
+            <li>Dashboards & KPIs</li>
+            <li>Google Sheets systems</li>
+            <li>Business trackers</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <h3>Principle</h3>
+          <p class="muted" style="margin:0;">
+            <b>No chaos.</b><br>
+            No guesswork.<br>
+            Just systems that quietly work — every day.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVICES -->
+  <section id="services">
+    <div class="wrap">
+      <div class="secTitle">
+        <div>
+          <h2>Services</h2>
+          <p>Pick one or combine — I’ll build a system that fits your workflow.</p>
+        </div>
       </div>
 
       <div class="cards3">
         <div class="card">
-          <div class="icon">⚡</div>
-          <h3 style="margin:0 0 6px;">Швидко</h3>
-          <p class="muted" style="margin:0;">Замінив тексти — і можна показувати клієнту.</p>
+          <h3>Excel & VBA Automation</h3>
+          <p class="muted" style="margin:0;">
+            Remove manual work: buttons instead of repetitive actions, robust logic, clean input forms.
+          </p>
+          <ul class="list">
+            <li>UserForms & structured input</li>
+            <li>Automation scripts & workflows</li>
+            <li>Validation to prevent errors</li>
+          </ul>
         </div>
+
         <div class="card">
-          <div class="icon">📱</div>
-          <h3 style="margin:0 0 6px;">Адаптивно</h3>
-          <p class="muted" style="margin:0;">Нормально виглядає на телефоні та ПК.</p>
+          <h3>Dashboards & Reporting</h3>
+          <p class="muted" style="margin:0;">
+            One screen with your key metrics — always up to date.
+          </p>
+          <ul class="list">
+            <li>KPI dashboards</li>
+            <li>Auto-updating reports</li>
+            <li>Management-ready views</li>
+          </ul>
         </div>
+
         <div class="card">
-          <div class="icon">🧩</div>
-          <h3 style="margin:0 0 6px;">Модульно</h3>
-          <p class="muted" style="margin:0;">Блоки легко прибирати/додавати як кубики.</p>
-        </div>
-      </div>
-    </section>
-
-    <section id="how">
-      <div class="secTitle">
-        <h2>Як працює</h2>
-        <p>4 кроки — і готово.</p>
-      </div>
-
-      <div class="steps">
-        <div class="step"><b>1) Тексти</b><span class="muted">Підстав назву, оффер, CTA.</span></div>
-        <div class="step"><b>2) Структура</b><span class="muted">Залиш тільки потрібні секції.</span></div>
-        <div class="step"><b>3) Контакти</b><span class="muted">Форма заявки + месенджер.</span></div>
-        <div class="step"><b>4) Деплой</b><span class="muted">GitHub Pages / Netlify.</span></div>
-      </div>
-    </section>
-
-    <section id="pricing">
-      <div class="secTitle">
-        <h2>Ціни</h2>
-        <p>Можна під Fiverr-пакети.</p>
-      </div>
-
-      <div class="pricing">
-        <div class="price">
-          <h3 style="margin:0;">Basic</h3>
-          <div class="amount">$25</div>
-          <div class="muted">Один лендинг, правки текстів.</div>
-          <ul>
-            <li>1 сторінка</li>
-            <li>CTA + контакти</li>
-            <li>Адаптивність</li>
+          <h3>Business Tracking Systems</h3>
+          <p class="muted" style="margin:0;">
+            Money, people, projects, operations — tracked in one structured system.
+          </p>
+          <ul class="list">
+            <li>Finance & cashflow tracking</li>
+            <li>Personnel / workload trackers</li>
+            <li>Planning & scheduling</li>
           </ul>
         </div>
 
-        <div class="price" style="border-color: rgba(124,92,255,.5);">
-          <span class="badge">Найчастіше</span>
-          <h3 style="margin:0;">Standard</h3>
-          <div class="amount">$55</div>
-          <div class="muted">Дод. секції + базова SEO.</div>
-          <ul>
-            <li>+ FAQ</li>
-            <li>+ Блок “як це працює”</li>
-            <li>Meta description</li>
+        <div class="card">
+          <h3>Google Sheets Systems</h3>
+          <p class="muted" style="margin:0;">
+            Team-friendly tools in the cloud — ideal for distributed teams.
+          </p>
+          <ul class="list">
+            <li>Sheets + Forms workflows</li>
+            <li>Shared dashboards</li>
+            <li>Clean access for teams</li>
           </ul>
         </div>
 
-        <div class="price">
-          <h3 style="margin:0;">Premium</h3>
-          <div class="amount">$99</div>
-          <div class="muted">Під ключ, під стиль бренду.</div>
-          <ul>
-            <li>Кольори/шрифти</li>
-            <li>Дод. сторінка</li>
-            <li>Підготовка до хостингу</li>
+        <div class="card">
+          <h3>Custom Tools for Teams</h3>
+          <p class="muted" style="margin:0;">
+            If your process is unique — I build a tool that matches it.
+          </p>
+          <ul class="list">
+            <li>Requirements → structure → build</li>
+            <li>Scalable logic</li>
+            <li>Maintainable systems</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <h3>Why it works</h3>
+          <p class="muted" style="margin:0;">
+            I don’t deliver random spreadsheets. I build <b>systems</b>.
+          </p>
+          <ul class="list">
+            <li>Logic-first design</li>
+            <li>Reliable, clean data model</li>
+            <li>Team-friendly usage</li>
           </ul>
         </div>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <section id="faq">
+  <!-- CASES -->
+  <section id="cases">
+    <div class="wrap">
       <div class="secTitle">
-        <h2>FAQ</h2>
-        <p>Коротко по частих питаннях.</p>
+        <div>
+          <h2>Cases</h2>
+          <p>3 ready-to-show case templates. Replace screenshots/PDF with your own.</p>
+        </div>
+        <div class="row">
+          <a class="btn" href="mailto:mr.schljakhta@gmail.com?subject=Project%20request%20—%20Alexis%20Data%20Systems">Request a quote</a>
+          <a class="btn primary" href="https://www.fiverr.com/Alex_E" target="_blank" rel="noopener">Hire on Fiverr</a>
+        </div>
       </div>
 
-      <div class="faq">
-        <details>
-          <summary>Це точно без бібліотек?</summary>
-          <div class="muted" style="margin-top:8px;">Так. Лише HTML + CSS + трохи JS.</div>
-        </details>
-        <details>
-          <summary>Як додати ще секцію?</summary>
-          <div class="muted" style="margin-top:8px;">Скопіюй будь-який блок &lt;section&gt; і зміни заголовки.</div>
-        </details>
-        <details>
-          <summary>Форма відправляє повідомлення?</summary>
-          <div class="muted" style="margin-top:8px;">Зараз — демо. Можна підключити Telegram Bot або Formspree/Netlify Forms.</div>
-        </details>
-        <details>
-          <summary>Можна зробити мульти-сторінковий сайт?</summary>
-          <div class="muted" style="margin-top:8px;">Так. Додамо 2–4 сторінки і навігацію.</div>
-        </details>
-      </div>
-    </section>
-
-    <section id="contact">
-      <div class="secTitle">
-        <h2>Контакти</h2>
-        <p>Демо-форма (з валідацією).</p>
-      </div>
-
-      <div class="card">
-        <form id="contactForm">
-          <div class="row">
-            <div style="flex:1; min-width:220px;">
-              <label class="small muted">Ім’я</label>
-              <input class="input" name="name" placeholder="Твоє ім’я" required />
-            </div>
-            <div style="flex:1; min-width:220px;">
-              <label class="small muted">Телефон/Telegram</label>
-              <input class="input" name="contact" placeholder="@username або +380..." required />
-            </div>
+      <div class="cards3">
+        <div class="card">
+          <!-- Replace with your screenshot path -->
+          <div class="shot" style="margin-bottom:12px;">
+            Add screenshot: assets/images/case-1.png
           </div>
+          <h3 style="margin:0 0 6px;">Financial Tracking System</h3>
+          <p class="muted" style="margin:0 0 12px;">
+            Cashflow, expenses, profit overview — automated reporting + clean inputs.
+          </p>
+          <div class="row">
+            <!-- Replace links once you add files -->
+            <a class="btn primary" href="#portfolio">View visuals</a>
+            <a class="btn" href="#" onclick="alert('Add PDF in assets/pdfs/case-1.pdf and link it here'); return false;">PDF</a>
+          </div>
+        </div>
 
-          <div style="height:10px"></div>
+        <div class="card">
+          <div class="shot" style="margin-bottom:12px;">
+            Add screenshot: assets/images/case-2.png
+          </div>
+          <h3 style="margin:0 0 6px;">Team & Workload Tracker</h3>
+          <p class="muted" style="margin:0 0 12px;">
+            Roles, workload, availability — a structured tracker that scales with teams.
+          </p>
+          <div class="row">
+            <a class="btn primary" href="#portfolio">View visuals</a>
+            <a class="btn" href="#" onclick="alert('Add PDF in assets/pdfs/case-2.pdf and link it here'); return false;">PDF</a>
+          </div>
+        </div>
 
-          <label class="small muted">Повідомлення</label>
-          <textarea class="input" name="msg" rows="4" placeholder="Що потрібно зробити?" required></textarea>
-
-          <div style="height:14px"></div>
-
-          <button class="btn primary" type="submit">Надіслати</button>
-          <span class="muted small" style="margin-left:10px;">*демо, без реальної відправки</span>
-        </form>
+        <div class="card">
+          <div class="shot" style="margin-bottom:12px;">
+            Add screenshot: assets/images/case-3.png
+          </div>
+          <h3 style="margin:0 0 6px;">Operations Dashboard</h3>
+          <p class="muted" style="margin:0 0 12px;">
+            One screen for managers: KPIs, status, alerts — always up to date.
+          </p>
+          <div class="row">
+            <a class="btn primary" href="#portfolio">View visuals</a>
+            <a class="btn" href="#" onclick="alert('Add PDF in assets/pdfs/case-3.pdf and link it here'); return false;">PDF</a>
+          </div>
+        </div>
       </div>
-    </section>
 
-    <footer class="wrap">
-      <div class="row" style="justify-content:space-between; align-items:center">
-        <div class="small">© <span id="year"></span> SiteKit. Зроблено без зайвого.</div>
-        <div class="small">Порада: задеплой на GitHub Pages за 2 хв.</div>
+      <div style="height:14px;"></div>
+      <div class="card">
+        <h3 style="margin:0 0 8px;">How to add your screenshots & PDFs</h3>
+        <p class="muted" style="margin:0;">
+          Create folders in your repo: <b>assets/images</b> and <b>assets/pdfs</b>.
+          Upload your files there. Then replace the placeholders in this section with real links.
+        </p>
       </div>
-    </footer>
-  </main>
+    </div>
+  </section>
 
-  <div class="toast" id="toast"></div>
+  <!-- PORTFOLIO -->
+  <section id="portfolio">
+    <div class="wrap">
+      <div class="secTitle">
+        <div>
+          <h2>Portfolio</h2>
+          <p>Drop-in gallery placeholders. Swap them with your screenshots anytime.</p>
+        </div>
+      </div>
+
+      <div class="gallery">
+        <!-- Replace each .shot with <img src="assets/images/xxx.png" ...> -->
+        <div class="shot">Screenshot #1<br>(assets/images/shot-1.png)</div>
+        <div class="shot">Screenshot #2<br>(assets/images/shot-2.png)</div>
+        <div class="shot">Screenshot #3<br>(assets/images/shot-3.png)</div>
+        <div class="shot">Screenshot #4<br>(assets/images/shot-4.png)</div>
+        <div class="shot">Screenshot #5<br>(assets/images/shot-5.png)</div>
+        <div class="shot">Screenshot #6<br>(assets/images/shot-6.png)</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <div class="wrap">
+      <div class="secTitle">
+        <div>
+          <h2>Contact</h2>
+          <p>Fastest ways to reach me.</p>
+        </div>
+      </div>
+
+      <div class="cards3" style="grid-template-columns: 1.2fr .9fr .9fr;">
+        <div class="card">
+          <h3>Let’s build your system</h3>
+          <p class="muted" style="margin:0 0 12px;">
+            Tell me what you do and what you need to control. I’ll propose a clean structure and automation plan.
+          </p>
+          <div class="row">
+            <a class="btn primary" href="https://www.fiverr.com/Alex_E" target="_blank" rel="noopener">Start on Fiverr</a>
+            <a class="btn" href="mailto:mr.schljakhta@gmail.com?subject=Project%20request%20—%20Alexis%20Data%20Systems">Email me</a>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Email</h3>
+          <p class="muted" style="margin:0 0 12px;">
+            mr.schljakhta@gmail.com
+          </p>
+          <a class="btn" href="mailto:mr.schljakhta@gmail.com">Open mail client</a>
+        </div>
+
+        <div class="card">
+          <h3>Fiverr</h3>
+          <p class="muted" style="margin:0 0 12px;">
+            Fastest for orders and escrow.
+          </p>
+          <a class="btn primary" href="https://www.fiverr.com/Alex_E" target="_blank" rel="noopener">Open Fiverr profile</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="wrap foot">
+      <div>© <span id="year"></span> Alexis Data Systems</div>
+      <div class="row">
+        <a class="btn" href="#about">About</a>
+        <a class="btn" href="#services">Services</a>
+        <a class="btn" href="#cases">Cases</a>
+        <a class="btn" href="#contact">Contact</a>
+      </div>
+    </div>
+  </footer>
 
   <script>
-    const $ = (id) => document.getElementById(id);
+    // =======================
+    // Theme toggle (default: dark)
+    // =======================
+    const root = document.documentElement;
+    const key = "ads_theme"; // alexis data systems theme
+    const btn = document.getElementById("themeToggle");
+    const icon = document.getElementById("themeIcon");
 
-    $("year").textContent = new Date().getFullYear();
-
-    function toast(text){
-      const t = $("toast");
-      t.textContent = text;
-      t.style.display = "block";
-      clearTimeout(window.__toastTimer);
-      window.__toastTimer = setTimeout(()=> t.style.display="none", 2400);
+    function setTheme(t){
+      if(t === "light"){
+        root.setAttribute("data-theme","light");
+        icon.textContent = "☀️";
+      } else {
+        root.removeAttribute("data-theme");
+        icon.textContent = "🌙";
+      }
+      localStorage.setItem(key, t);
     }
 
-    $("genBtn").addEventListener("click", () => {
-      const brand = $("brand").value.trim() || "SiteKit";
-      const niche = $("niche").value.trim() || "шаблони, які легко адаптувати під клієнта";
-      $("out").textContent = `${brand} — ${niche}.`;
-      $("out2").textContent = `Показуй демо клієнту, збирай заявки і масштабуй.`;
-      toast("Текст згенеровано ✅");
+    const saved = localStorage.getItem(key);
+    setTheme(saved || "dark");
+
+    btn.addEventListener("click", () => {
+      const current = root.getAttribute("data-theme") === "light" ? "light" : "dark";
+      setTheme(current === "dark" ? "light" : "dark");
     });
 
-    $("copyBtn").addEventListener("click", async () => {
-      const txt = `${$("out").textContent}\n${$("out2").textContent}`;
-      try{
-        await navigator.clipboard.writeText(txt);
-        toast("Скопійовано в буфер ✅");
-      }catch(e){
-        toast("Не вдалось скопіювати. Спробуй вручну 🙃");
-      }
-    });
-
-    $("contactForm").addEventListener("submit", (e) => {
-      e.preventDefault();
-      const fd = new FormData(e.target);
-      const name = fd.get("name").trim();
-      const contact = fd.get("contact").trim();
-      const msg = fd.get("msg").trim();
-
-      if(!name || !contact || !msg){
-        toast("Заповни всі поля 🙂");
-        return;
-      }
-
-      // ДЕМО: тут можна інтегрувати відправку (Telegram Bot / Formspree / Netlify Forms)
-      toast("Заявку прийнято (демо) ✅");
-      e.target.reset();
-    });
+    // year
+    document.getElementById("year").textContent = new Date().getFullYear();
   </script>
 </body>
 </html>
