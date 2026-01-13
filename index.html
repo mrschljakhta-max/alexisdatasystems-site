@@ -89,7 +89,7 @@
     .brand:hover{background: rgba(255,255,255,.06); transform: translateY(-1px);}
     html[data-theme="light"] .brand:hover{background: rgba(10,20,40,.06);}
 
-    /* Logo container – акуратно, без “квадрата-гіганта” */
+    /* Logo container – акуратно */
     .logoWrap{
       width:44px; height:44px; border-radius: 14px;
       display:grid; place-items:center;
@@ -98,6 +98,7 @@
       box-shadow: var(--shadow2);
       position:relative;
       overflow:hidden;
+      flex:0 0 auto;
     }
     html[data-theme="light"] .logoWrap{
       border: 1px solid rgba(10,20,40,.12);
@@ -203,9 +204,7 @@
        SECTIONS
     ========================== */
     section{scroll-margin-top: calc(var(--headerH) + 18px);}
-    .hero{
-      padding: 54px 0 18px;
-    }
+    .hero{padding: 54px 0 18px;}
     .heroGrid{
       display:grid;
       grid-template-columns: 1.25fr .95fr;
@@ -213,8 +212,8 @@
       align-items:stretch;
     }
     @media (max-width: 980px){
-      .heroGrid{grid-template-columns:1fr; }
-      .nav{display:none;} /* мобільно простіше; якщо треба — додамо бургер */
+      .heroGrid{grid-template-columns:1fr;}
+      .nav{display:none;}
     }
     .panel{
       border-radius: var(--radius2);
@@ -301,59 +300,137 @@
     .stat b{display:block; font-size: 24px;}
     .stat span{color: var(--muted); font-size: 13px;}
 
-    /* Right hero: preview card (place for images) */
+    /* Right hero */
     .heroRight{padding: 16px;}
-    .preview{
-      border-radius: 22px;
-      border: 1px solid rgba(255,255,255,.10);
+
+    /* =========================
+       SHOWCASE CAROUSEL
+    ========================== */
+    .showcaseCard{
+      border-radius:22px;
+      background: rgba(255,255,255,.04);
+      border:1px solid rgba(255,255,255,.10);
+      box-shadow: var(--shadow2);
+      padding:14px;
       background:
         radial-gradient(800px 420px at 20% 10%, rgba(79,125,255,.22), transparent 55%),
         radial-gradient(700px 420px at 80% 20%, rgba(43,210,255,.16), transparent 55%),
         rgba(255,255,255,.04);
-      overflow:hidden;
-      box-shadow: var(--shadow2);
     }
-    html[data-theme="light"] .preview{border-color: rgba(10,20,40,.10);}
-    .previewTop{
-      padding: 14px 14px 10px;
-      display:flex; align-items:center; justify-content:space-between;
+    html[data-theme="light"] .showcaseCard{border-color: rgba(10,20,40,.10);}
+
+    .showcaseTop{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin-bottom:10px;
       gap:10px;
     }
-    .miniDots{display:flex; gap:6px;}
-    .dot{width:9px; height:9px; border-radius:99px; background: rgba(255,255,255,.18);}
-    html[data-theme="light"] .dot{background: rgba(10,20,40,.18);}
-    .previewBody{padding: 0 14px 14px;}
-    .shotGrid{
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
+    .showcaseNav{display:flex; gap:8px;}
+
+    .shBtn{
+      width:36px;height:36px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.18);
+      background:rgba(255,255,255,.06);
+      color: var(--text);
+      cursor:pointer;
+      transition: transform .18s ease, background .2s ease, border-color .2s ease;
+      font-size:18px;
+      line-height:1;
     }
-    @media (max-width: 480px){ .shotGrid{grid-template-columns:1fr;} }
-    .shot{
-      border-radius: 16px;
-      border: 1px solid rgba(255,255,255,.10);
-      background: rgba(255,255,255,.04);
+    .shBtn:hover{
+      transform: translateY(-1px);
+      background:rgba(255,255,255,.08);
+      border-color: rgba(255,255,255,.26);
+    }
+    html[data-theme="light"] .shBtn{
+      border-color: rgba(10,20,40,.14);
+      background: rgba(10,20,40,.04);
+    }
+    html[data-theme="light"] .shBtn:hover{
+      border-color: rgba(10,20,40,.22);
+      background: rgba(10,20,40,.06);
+    }
+
+    .shViewport{
       overflow:hidden;
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.03);
+    }
+    html[data-theme="light"] .shViewport{
+      border-color: rgba(10,20,40,.10);
+      background: rgba(10,20,40,.03);
+    }
+
+    .shTrack{
+      display:flex;
+      transition: transform .45s cubic-bezier(.2,.8,.2,1);
+      will-change: transform;
+    }
+
+    .shSlide{
+      min-width:100%;
       position:relative;
+      overflow:hidden;
       aspect-ratio: 16 / 10;
-      display:grid; place-items:center;
+      display:grid;
+      place-items:center;
       color: var(--muted2);
-      font-weight: 700;
-      letter-spacing:.2px;
+      font-weight:700;
     }
-    html[data-theme="light"] .shot{border-color: rgba(10,20,40,.10); background: rgba(10,20,40,.04);}
-    .shot img{width:100%; height:100%; object-fit:cover; display:block;}
-    .shot .tag{
-      position:absolute; left:10px; top:10px;
-      font-size: 12px;
-      padding: 6px 10px;
-      border-radius: 999px;
-      background: rgba(0,0,0,.35);
-      border:1px solid rgba(255,255,255,.12);
+
+    .shSlide img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:block;
+    }
+
+    .shBadge{
+      position:absolute;
+      top:12px;
+      left:12px;
+      padding:8px 14px;
+      border-radius:999px;
+      background:rgba(0,0,0,.45);
+      border:1px solid rgba(255,255,255,.22);
       backdrop-filter: blur(10px);
-      color: #fff;
+      font-weight:700;
+      font-size:13px;
+      color:#fff;
+      max-width: calc(100% - 24px);
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
     }
-    html[data-theme="light"] .shot .tag{background: rgba(255,255,255,.70); color: var(--text); border-color: rgba(10,20,40,.10);}
+    html[data-theme="light"] .shBadge{
+      background:rgba(255,255,255,.72);
+      border-color: rgba(10,20,40,.10);
+      color: var(--text);
+    }
+
+    .shDots{
+      display:flex;
+      justify-content:center;
+      gap:8px;
+      margin-top:10px;
+    }
+    .shDots span{
+      width:8px;height:8px;
+      border-radius:99px;
+      background:rgba(255,255,255,.28);
+      cursor:pointer;
+      transition: width .2s ease, background .2s ease;
+    }
+    .shDots span.active{
+      width:26px;
+      background:linear-gradient(90deg,#4F7DFF,#2BD2FF);
+    }
+    html[data-theme="light"] .shDots span{
+      background: rgba(10,20,40,.18);
+    }
 
     /* Sections layout */
     .section{padding: 34px 0;}
@@ -524,7 +601,6 @@
     <div class="wrap header-inner">
       <a class="brand" href="#top" aria-label="Back to top">
         <span class="logoWrap" aria-hidden="true">
-          <!-- Inline SVG logo (diamond) – без окремих файлів -->
           <svg class="logo" viewBox="0 0 24 24" fill="none">
             <path d="M12 2.5 21.5 12 12 21.5 2.5 12 12 2.5Z" fill="rgba(255,255,255,.85)"/>
             <path d="M12 5.7 18.3 12 12 18.3 5.7 12 12 5.7Z" fill="url(#g)"/>
@@ -551,11 +627,10 @@
       </nav>
 
       <div class="hdrRight">
-        <!-- Avatar badge -->
         <div class="avatarCard" title="Alexis — hover to expand">
           <div class="avatar" aria-hidden="true">
-            <!-- Put your file here: assets/images/avatar/alexis.jpg -->
-            <img src="assets/images/avatar/alexis.jpg" alt="" onerror="this.remove(); this.parentNode.querySelector('.avatarFallback').style.display='grid';" />
+            <img src="assets/images/avatar/alexis.jpg" alt=""
+                 onerror="this.remove(); this.parentNode.querySelector('.avatarFallback').style.display='grid';" />
             <div class="avatarFallback" style="display:none; width:100%; height:100%; place-items:center;">OS</div>
           </div>
           <div class="avatarMeta">
@@ -564,25 +639,21 @@
           </div>
         </div>
 
-        <!-- Theme toggle -->
         <button class="iconBtn" id="themeBtn" aria-label="Toggle theme" title="Theme">
           <span id="themeIcon" aria-hidden="true">🌙</span>
           <span class="sr">Toggle theme</span>
         </button>
 
-        <!-- Fiverr CTA -->
-        <a class="cta" href="#contact" title="Hire on Fiverr / Contact">
-          Hire on Fiverr
-        </a>
+        <a class="cta" href="#contact" title="Hire on Fiverr / Contact">Hire on Fiverr</a>
       </div>
     </div>
   </header>
 
+  <div id="top"></div>
+
   <!-- =========================
        HERO
   ========================== -->
-  <div id="top"></div>
-
   <section class="hero">
     <div class="wrap heroGrid">
       <div class="panel">
@@ -608,58 +679,54 @@
         </div>
 
         <div class="stats">
-          <div class="stat">
-            <b>20+ yrs</b>
-            <span>Excel learning & modeling</span>
-          </div>
-          <div class="stat">
-            <b>Automation</b>
-            <span>VBA + structured workflows</span>
-          </div>
-          <div class="stat">
-            <b>Control</b>
-            <span>Reliable dashboards & tracking</span>
-          </div>
+          <div class="stat"><b>20+ yrs</b><span>Excel learning & modeling</span></div>
+          <div class="stat"><b>Automation</b><span>VBA + structured workflows</span></div>
+          <div class="stat"><b>Control</b><span>Reliable dashboards & tracking</span></div>
         </div>
       </div>
 
+      <!-- RIGHT HERO: CAROUSEL -->
       <div class="panel heroRight">
-        <div class="preview">
-          <div class="previewTop">
-            <div class="miniDots" aria-hidden="true">
-              <span class="dot"></span><span class="dot"></span><span class="dot"></span>
-            </div>
+        <div class="showcaseCard">
+          <div class="showcaseTop">
             <div class="small">Showcase previews</div>
+            <div class="showcaseNav">
+              <button class="shBtn" data-dir="-1" type="button" aria-label="Previous">‹</button>
+              <button class="shBtn" data-dir="1" type="button" aria-label="Next">›</button>
+            </div>
           </div>
 
-          <div class="previewBody">
-            <div class="shotGrid">
-              <!-- Якщо зображення ще не залиті — побачиш красивий placeholder -->
-              <div class="shot">
-                <span class="tag">Finance dashboard</span>
+          <div class="shViewport">
+            <div class="shTrack">
+              <div class="shSlide">
+                <div class="shBadge">Finance dashboard</div>
                 <img src="assets/images/case-1-dashboard.png" alt="Finance dashboard preview"
-                     onerror="this.remove(); this.parentNode.append('Add case-1-dashboard.png');" />
+                     onerror="this.remove(); this.parentNode.insertAdjacentText('beforeend','Add case-1-dashboard.png');" />
               </div>
-              <div class="shot">
-                <span class="tag">HR onboarding</span>
-                <img src="assets/images/case-2-form.png" alt="HR form preview"
-                     onerror="this.remove(); this.parentNode.append('Add case-2-form.png');" />
+              <div class="shSlide">
+                <div class="shBadge">HR onboarding</div>
+                <img src="assets/images/case-2-form.png" alt="HR onboarding preview"
+                     onerror="this.remove(); this.parentNode.insertAdjacentText('beforeend','Add case-2-form.png');" />
               </div>
-              <div class="shot">
-                <span class="tag">Expense tracker</span>
+              <div class="shSlide">
+                <div class="shBadge">Expense tracker</div>
                 <img src="assets/images/case-3-tracker.png" alt="Expense tracker preview"
-                     onerror="this.remove(); this.parentNode.append('Add case-3-tracker.png');" />
+                     onerror="this.remove(); this.parentNode.insertAdjacentText('beforeend','Add case-3-tracker.png');" />
               </div>
-              <div class="shot">
-                <span class="tag">Sheets KPI system</span>
+              <div class="shSlide">
+                <div class="shBadge">Sheets KPI system</div>
                 <img src="assets/images/case-4-gsheets.png" alt="Google Sheets KPI preview"
-                     onerror="this.remove(); this.parentNode.append('Add case-4-gsheets.png');" />
+                     onerror="this.remove(); this.parentNode.insertAdjacentText('beforeend','Add case-4-gsheets.png');" />
               </div>
             </div>
           </div>
-        </div>
-        <div class="small" style="padding:10px 8px 0; opacity:.9;">
-          Tip: завантаж скріни в <code>assets/images/</code> з іменами <code>case-1-dashboard.png</code>… і вітрина одразу оживе.
+
+          <div class="shDots" aria-label="Carousel dots"></div>
+
+          <div class="small" style="padding:10px 2px 0; opacity:.9;">
+            Tip: завантаж скріни в <code>assets/images/</code> з іменами
+            <code>case-1-dashboard.png</code>, <code>case-2-form.png</code>, <code>case-3-tracker.png</code>, <code>case-4-gsheets.png</code>.
+          </div>
         </div>
       </div>
     </div>
@@ -843,7 +910,7 @@
   </section>
 
   <!-- =========================
-       DEMO (MINI GAME)
+       DEMO
   ========================== -->
   <section class="section" id="demo">
     <div class="wrap">
@@ -874,8 +941,8 @@
               <select id="selSystem">
                 <option value="Finance dashboard">Finance dashboard</option>
                 <option value="HR onboarding form">HR onboarding form</option>
-                <option value="Expense tracker">Business expense tracker</option>
-                <option value="Sheets KPI system">Google Sheets KPI system</option>
+                <option value="Business expense tracker">Business expense tracker</option>
+                <option value="Google Sheets KPI system">Google Sheets KPI system</option>
               </select>
             </div>
 
@@ -958,7 +1025,6 @@
 
           <div class="copyRow">
             <a class="linkBtn" href="mailto:mr.schljakhta@gmail.com?subject=Project%20Request%20(Alexis%20Data%20Systems)">✉ mr.schljakhta@gmail.com</a>
-            <!-- Якщо маєш другий email — заміниш нижче -->
             <button class="linkBtn" type="button" onclick="copyText('mr.schljakhta@gmail.com')">📋 Copy</button>
           </div>
 
@@ -989,7 +1055,7 @@
 
   <script>
     // =========================
-    // THEME (default: dark)
+    // THEME
     // =========================
     const root = document.documentElement;
     const themeBtn = document.getElementById('themeBtn');
@@ -1009,7 +1075,7 @@
     });
 
     // =========================
-    // NAV ACTIVE (scroll + hash)
+    // NAV ACTIVE
     // =========================
     const navLinks = [...document.querySelectorAll('.nav a[data-nav]')];
     const sections = navLinks
@@ -1017,7 +1083,6 @@
       .filter(Boolean);
 
     const obs = new IntersectionObserver((entries) => {
-      // pick most visible
       const visible = entries.filter(e => e.isIntersecting).sort((a,b) => b.intersectionRatio - a.intersectionRatio)[0];
       if(!visible) return;
       const id = visible.target.id;
@@ -1027,7 +1092,6 @@
 
     sections.forEach(s => obs.observe(s));
 
-    // initial active based on hash
     function setActiveFromHash(){
       const h = (location.hash || "").replace("#","");
       navLinks.forEach(a => a.classList.toggle('active', a.getAttribute('data-nav') === h));
@@ -1074,7 +1138,6 @@
       mockName.textContent = system;
       mockAuto.textContent = `Automation: ${auto}`;
 
-      // chips
       const chips = [
         chaos.includes("Manual") ? "1-click reporting" : "Less chaos",
         system.includes("dashboard") ? "Visual control" : "Structured flow",
@@ -1082,7 +1145,6 @@
       ];
       rChips.innerHTML = chips.map(c => `<span class="chip">${c}</span>`).join("");
 
-      // mini numbers just to feel “alive”
       const rev = 11000 + Math.floor(Math.random()*4000);
       const exp = 6500 + Math.floor(Math.random()*2500);
       const net = rev - exp;
@@ -1092,7 +1154,6 @@
     }
 
     [selChaos, selSystem, selAuto].forEach(el => el.addEventListener('change', render));
-
     document.getElementById('presetBtn').addEventListener('click', () => {
       selChaos.value = "Manual reports";
       selSystem.value = "Finance dashboard";
@@ -1111,14 +1172,58 @@
     render();
 
     // =========================
+    // SHOWCASE CAROUSEL
+    // =========================
+    const track = document.querySelector(".shTrack");
+    const slides = document.querySelectorAll(".shSlide");
+    const dotsBox = document.querySelector(".shDots");
+    const buttons = document.querySelectorAll(".shBtn");
+    let index = 0;
+
+    if(track && slides.length && dotsBox){
+      slides.forEach((_, i) => {
+        const d = document.createElement("span");
+        if(i === 0) d.classList.add("active");
+        d.addEventListener("click", () => go(i));
+        dotsBox.appendChild(d);
+      });
+
+      const dots = dotsBox.querySelectorAll("span");
+
+      function go(i){
+        index = Math.max(0, Math.min(slides.length - 1, i));
+        track.style.transform = `translateX(${-index * 100}%)`;
+        dots.forEach((d, n) => d.classList.toggle("active", n === index));
+      }
+
+      buttons.forEach(b => {
+        b.addEventListener("click", () => go(index + Number(b.dataset.dir)));
+      });
+
+      // swipe (mobile)
+      let startX = null;
+      const viewport = document.querySelector(".shViewport");
+      if(viewport){
+        viewport.addEventListener("touchstart", (e)=>{ startX = e.touches[0].clientX; }, {passive:true});
+        viewport.addEventListener("touchend", (e)=>{
+          if(startX === null) return;
+          const endX = e.changedTouches[0].clientX;
+          const dx = endX - startX;
+          if(Math.abs(dx) > 40){
+            go(index + (dx < 0 ? 1 : -1));
+          }
+          startX = null;
+        }, {passive:true});
+      }
+    }
+
+    // =========================
     // Helpers
     // =========================
     document.getElementById('y').textContent = new Date().getFullYear();
 
     function copyText(t){
-      navigator.clipboard.writeText(t).then(() => {
-        alert("Copied: " + t);
-      });
+      navigator.clipboard.writeText(t).then(() => alert("Copied: " + t));
     }
     window.copyText = copyText;
   </script>
