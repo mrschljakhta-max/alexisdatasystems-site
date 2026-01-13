@@ -1,9 +1,10 @@
 <!doctype html>
-<html lang="uk" data-theme="dark">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="color-scheme" content="dark light">
+
   <title>Alexis Data Systems — Excel & Google Sheets Automation</title>
   <meta name="description" content="Clean business systems built on Excel & Google Sheets. Dashboards, automation, tracking, onboarding." />
 
@@ -50,6 +51,7 @@
     }
 
     *{box-sizing:border-box}
+    html{scroll-behavior:auto;} /* ми робимо кастомний smooth */
     body{
       margin:0;
       font: 16px/1.55 system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans", "Apple Color Emoji","Segoe UI Emoji";
@@ -80,6 +82,7 @@
       border-bottom: 1px solid rgba(10,20,40,.08);
     }
     .header-inner{display:flex; align-items:center; justify-content:space-between; gap:14px; width:100%;}
+
     .brand{
       display:flex; align-items:center; gap:12px;
       padding: 10px 10px;
@@ -89,59 +92,222 @@
     .brand:hover{background: rgba(255,255,255,.06); transform: translateY(-1px);}
     html[data-theme="light"] .brand:hover{background: rgba(10,20,40,.06);}
 
-    /* Logo container – акуратно */
+    /* LOGO (image) */
     .logoWrap{
       width:44px; height:44px; border-radius: 14px;
       display:grid; place-items:center;
-      background: radial-gradient(70% 70% at 30% 20%, rgba(79,125,255,.45), rgba(43,210,255,.18));
+      background: radial-gradient(70% 70% at 30% 20%, rgba(79,125,255,.25), rgba(43,210,255,.10));
       border: 1px solid rgba(255,255,255,.14);
       box-shadow: var(--shadow2);
-      position:relative;
       overflow:hidden;
+      position:relative;
       flex:0 0 auto;
     }
-    html[data-theme="light"] .logoWrap{
-      border: 1px solid rgba(10,20,40,.12);
+    html[data-theme="light"] .logoWrap{border-color: rgba(10,20,40,.12);}
+
+    .logoImg{
+      width:100%; height:100%;
+      object-fit:cover;
+      display:block;
+      transform: scale(1.02);
     }
-    .logoWrap:before{
-      content:"";
-      position:absolute; inset:-40%;
-      background: conic-gradient(from 210deg, rgba(255,255,255,.14), transparent 35%, rgba(255,255,255,.10));
-      animation: spin 6s linear infinite;
-      opacity:.55;
+
+    /* fallback mini mark if logo missing */
+    .logoFallback{
+      width:24px; height:24px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, rgba(79,125,255,.95), rgba(43,210,255,.85));
+      box-shadow: 0 10px 25px rgba(79,125,255,.18);
+      display:none;
     }
-    @keyframes spin{to{transform:rotate(360deg)}}
-    .logo{
-      width:22px; height:22px; position:relative; z-index:1;
-      filter: drop-shadow(0 6px 10px rgba(0,0,0,.25));
-    }
+
     .brandText{display:flex; flex-direction:column; line-height:1.1}
     .brandText b{font-size:16px; letter-spacing:.2px}
     .brandText span{font-size:12px; color:var(--muted2)}
 
-    .nav{display:flex; align-items:center; gap:8px; flex-wrap:wrap; justify-content:center;}
+    /* =========================
+       DESKTOP NAV + SLIDING PILL
+    ========================== */
+    .nav{
+      display:flex; align-items:center; gap:8px; flex-wrap:wrap; justify-content:center;
+      position: relative;
+      padding: 6px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.03);
+      border: 1px solid rgba(255,255,255,.07);
+    }
+    html[data-theme="light"] .nav{
+      background: rgba(10,20,40,.03);
+      border-color: rgba(10,20,40,.08);
+    }
+
     .nav a{
       position:relative;
       padding:10px 12px;
       border-radius: 999px;
       color: var(--muted);
-      transition: background .2s ease, color .2s ease;
+      transition: transform .18s ease, background .2s ease, color .2s ease;
       font-weight: 520;
+      z-index: 1;
     }
-    .nav a:hover{background: rgba(255,255,255,.06); color: var(--text);}
+    .nav a:hover{background: rgba(255,255,255,.06); color: var(--text); transform: translateY(-1px);}
     html[data-theme="light"] .nav a:hover{background: rgba(10,20,40,.06);}
+
     .nav a.active{
       color: var(--text);
-      background: linear-gradient(90deg, rgba(79,125,255,.25), rgba(43,210,255,.18));
-      border: 1px solid rgba(255,255,255,.12);
+      background: transparent !important;
+      border: 1px solid transparent !important;
     }
-    html[data-theme="light"] .nav a.active{
-      border: 1px solid rgba(10,20,40,.10);
+
+    .nav .navPill{
+      position:absolute;
+      top:6px;
+      left:6px;
+      height: calc(100% - 12px);
+      width: 80px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, rgba(79,125,255,.28), rgba(43,210,255,.20));
+      border: 1px solid rgba(255,255,255,.12);
+      box-shadow: 0 10px 25px rgba(0,0,0,.25);
+      transform: translateX(0);
+      opacity: 0;
+      pointer-events:none;
+      transition: transform .42s cubic-bezier(.2,.8,.2,1), width .42s cubic-bezier(.2,.8,.2,1), opacity .15s ease;
+    }
+    html[data-theme="light"] .nav .navPill{
+      border-color: rgba(10,20,40,.10);
+      box-shadow: 0 10px 25px rgba(15,25,55,.10);
     }
 
     .hdrRight{display:flex; align-items:center; gap:10px;}
 
-    /* Avatar -> hover “розкриття” з підписом */
+    /* =========================
+       BURGER (MOBILE)
+    ========================== */
+    .burger{
+      width:44px; height:44px;
+      border-radius: 14px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.06);
+      display:none;
+      place-items:center;
+      cursor:pointer;
+      transition: transform .22s cubic-bezier(.2,.9,.2,1), background .2s ease, border-color .2s ease;
+    }
+    .burger:hover{transform: translateY(-1px); background: rgba(255,255,255,.08); border-color: rgba(255,255,255,.18);}
+    html[data-theme="light"] .burger{border-color: rgba(10,20,40,.12); background: rgba(10,20,40,.04);}
+    html[data-theme="light"] .burger:hover{background: rgba(10,20,40,.06); border-color: rgba(10,20,40,.18);}
+
+    .burgerLines{width:18px; height:12px; position:relative;}
+    .burgerLines i{
+      position:absolute; left:0; right:0;
+      height:2px; border-radius:99px;
+      background: rgba(255,255,255,.85);
+      transition: transform .25s ease, top .25s ease, opacity .2s ease;
+    }
+    html[data-theme="light"] .burgerLines i{background: rgba(10,20,40,.85);}
+    .burgerLines i:nth-child(1){top:0}
+    .burgerLines i:nth-child(2){top:5px}
+    .burgerLines i:nth-child(3){top:10px}
+
+    body.menuOpen .burgerLines i:nth-child(1){top:5px; transform: rotate(45deg);}
+    body.menuOpen .burgerLines i:nth-child(2){opacity:0;}
+    body.menuOpen .burgerLines i:nth-child(3){top:5px; transform: rotate(-45deg);}
+
+    body.menuOpen .burger{transform: translateY(-1px) scale(1.03);}
+
+    @media (max-width: 980px){
+      .nav{display:none;}
+      .burger{display:grid;}
+    }
+
+    .mNavOverlay{
+      position:fixed; inset:0;
+      background: rgba(0,0,0,.55);
+      backdrop-filter: blur(10px);
+      z-index:80;
+      opacity:0;
+      pointer-events:none;
+      transition: opacity .25s ease;
+    }
+    body.menuOpen .mNavOverlay{opacity:1; pointer-events:auto;}
+
+    .mNavPanel{
+      position:fixed;
+      top: calc(var(--headerH) + 10px);
+      right: 18px;
+      width: min(92vw, 360px);
+      border-radius: 20px;
+      border:1px solid rgba(255,255,255,.12);
+      background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.04));
+      box-shadow: var(--shadow);
+      z-index:90;
+
+      transform: translateY(-10px) scale(.98);
+      opacity:0;
+      pointer-events:none;
+      transition: transform .28s cubic-bezier(.18,.9,.18,1), opacity .25s ease;
+    }
+    html[data-theme="light"] .mNavPanel{border-color: rgba(10,20,40,.12);}
+    body.menuOpen .mNavPanel{transform:none; opacity:1; pointer-events:auto;}
+
+    .mNavHeader{
+      padding: 12px 12px 8px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      border-bottom: 1px solid rgba(255,255,255,.10);
+    }
+    html[data-theme="light"] .mNavHeader{border-bottom-color: rgba(10,20,40,.10);}
+
+    .mNavTitle{display:flex; flex-direction:column; line-height:1.1;}
+    .mNavTitle b{font-size:14px;}
+    .mNavTitle span{font-size:12px; color: var(--muted2);}
+
+    .mNavLinks{
+      padding: 10px 10px 12px;
+      display:flex; flex-direction:column; gap:8px;
+    }
+    .mNavLinks a{
+      position:relative;
+      overflow:hidden;
+      padding: 12px 12px;
+      border-radius: 14px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.04);
+      color: var(--text);
+      font-weight: 700;
+      transition: transform .18s ease, background .2s ease, border-color .2s ease;
+    }
+    .mNavLinks a:hover{transform: translateY(-1px); background: rgba(255,255,255,.06); border-color: rgba(255,255,255,.16);}
+    html[data-theme="light"] .mNavLinks a{border-color: rgba(10,20,40,.10); background: rgba(10,20,40,.04);}
+    html[data-theme="light"] .mNavLinks a:hover{background: rgba(10,20,40,.06); border-color: rgba(10,20,40,.16);}
+
+    .mNavLinks a::after{
+      content:"";
+      position:absolute;
+      inset:-2px;
+      background: radial-gradient(160px 80px at 20% 20%, rgba(79,125,255,.25), transparent 60%),
+                  radial-gradient(160px 80px at 80% 50%, rgba(43,210,255,.16), transparent 62%);
+      opacity:0;
+      transition: opacity .2s ease;
+      pointer-events:none;
+    }
+    .mNavLinks a:hover::after{opacity:1}
+
+    .mNavLinks a.mActive{
+      background: linear-gradient(90deg, rgba(79,125,255,.22), rgba(43,210,255,.16));
+      border-color: rgba(255,255,255,.16);
+    }
+    html[data-theme="light"] .mNavLinks a.mActive{border-color: rgba(10,20,40,.16);}
+
+    .mNavCTA{margin-top: 6px; display:flex; gap:10px; flex-wrap:wrap;}
+    .mNavCTA a, .mNavCTA button{flex:1 1 auto;}
+
+    /* =========================
+       AVATAR (expand on hover)
+    ========================== */
     .avatarCard{
       display:flex; align-items:center; gap:10px;
       padding: 8px 10px;
@@ -154,7 +320,7 @@
       transition: max-width .25s ease, background .2s ease, border-color .2s ease;
       cursor: default;
     }
-    .avatarCard:hover{max-width: 240px; background: rgba(255,255,255,.07); border-color: rgba(255,255,255,.16);}
+    .avatarCard:hover{max-width: 260px; background: rgba(255,255,255,.07); border-color: rgba(255,255,255,.16);}
     html[data-theme="light"] .avatarCard{border-color: rgba(10,20,40,.10); background: rgba(10,20,40,.04);}
     html[data-theme="light"] .avatarCard:hover{background: rgba(10,20,40,.06); border-color: rgba(10,20,40,.14);}
 
@@ -167,8 +333,8 @@
       flex:0 0 auto;
     }
     .avatar img{width:100%; height:100%; object-fit:cover; display:block}
-    .avatarFallback{font-weight:800; letter-spacing:.5px; font-size:12px}
-    .avatarMeta{min-width: 160px}
+    .avatarFallback{font-weight:900; letter-spacing:.5px; font-size:12px}
+    .avatarMeta{min-width: 175px}
     .avatarMeta b{display:block; font-size:14px; line-height:1.1}
     .avatarMeta span{display:block; font-size:12px; color:var(--muted2); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
 
@@ -190,7 +356,7 @@
       border-radius: 999px;
       background: linear-gradient(90deg, rgba(79,125,255,.95), rgba(43,210,255,.9));
       color:#061023;
-      font-weight: 750;
+      font-weight: 800;
       letter-spacing:.2px;
       border:0;
       cursor:pointer;
@@ -205,6 +371,7 @@
     ========================== */
     section{scroll-margin-top: calc(var(--headerH) + 18px);}
     .hero{padding: 54px 0 18px;}
+
     .heroGrid{
       display:grid;
       grid-template-columns: 1.25fr .95fr;
@@ -213,8 +380,8 @@
     }
     @media (max-width: 980px){
       .heroGrid{grid-template-columns:1fr;}
-      .nav{display:none;}
     }
+
     .panel{
       border-radius: var(--radius2);
       border: 1px solid rgba(255,255,255,.10);
@@ -235,6 +402,7 @@
       font-size: 13px;
     }
     html[data-theme="light"] .pill{background: rgba(10,20,40,.05); border-color: rgba(10,20,40,.10);}
+
     h1{
       margin: 14px 0 10px;
       font-size: 52px;
@@ -244,6 +412,7 @@
     @media (max-width: 560px){ h1{font-size: 40px;} }
 
     .lead{color: var(--muted); font-size: 17px; max-width: 60ch; margin: 0 0 16px;}
+
     .badges{display:flex; flex-wrap:wrap; gap:10px; margin: 16px 0 18px;}
     .badge{
       display:inline-flex; align-items:center; gap:10px;
@@ -256,6 +425,7 @@
       font-size: 13px;
     }
     html[data-theme="light"] .badge{background: rgba(10,20,40,.04); border-color: rgba(10,20,40,.10);}
+
     .tick{
       width:18px; height:18px; border-radius: 6px;
       display:grid; place-items:center;
@@ -275,7 +445,7 @@
       color: var(--text);
       cursor:pointer;
       transition: transform .18s ease, background .2s ease, border-color .2s ease;
-      font-weight: 700;
+      font-weight: 800;
     }
     .btn:hover{transform: translateY(-1px); background: rgba(255,255,255,.07); border-color: rgba(255,255,255,.16);}
     html[data-theme="light"] .btn{border-color: rgba(10,20,40,.10); background: rgba(10,20,40,.04);}
@@ -300,139 +470,63 @@
     .stat b{display:block; font-size: 24px;}
     .stat span{color: var(--muted); font-size: 13px;}
 
-    /* Right hero */
+    /* Right hero previews */
     .heroRight{padding: 16px;}
-
-    /* =========================
-       SHOWCASE CAROUSEL
-    ========================== */
-    .showcaseCard{
-      border-radius:22px;
-      background: rgba(255,255,255,.04);
-      border:1px solid rgba(255,255,255,.10);
-      box-shadow: var(--shadow2);
-      padding:14px;
+    .preview{
+      border-radius: 22px;
+      border: 1px solid rgba(255,255,255,.10);
       background:
         radial-gradient(800px 420px at 20% 10%, rgba(79,125,255,.22), transparent 55%),
         radial-gradient(700px 420px at 80% 20%, rgba(43,210,255,.16), transparent 55%),
         rgba(255,255,255,.04);
+      overflow:hidden;
+      box-shadow: var(--shadow2);
     }
-    html[data-theme="light"] .showcaseCard{border-color: rgba(10,20,40,.10);}
-
-    .showcaseTop{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      margin-bottom:10px;
+    html[data-theme="light"] .preview{border-color: rgba(10,20,40,.10);}
+    .previewTop{
+      padding: 14px 14px 10px;
+      display:flex; align-items:center; justify-content:space-between;
       gap:10px;
     }
-    .showcaseNav{display:flex; gap:8px;}
+    .miniDots{display:flex; gap:6px;}
+    .dot{width:9px; height:9px; border-radius:99px; background: rgba(255,255,255,.18);}
+    html[data-theme="light"] .dot{background: rgba(10,20,40,.18);}
+    .previewBody{padding: 0 14px 14px;}
 
-    .shBtn{
-      width:36px;height:36px;
-      border-radius:12px;
-      border:1px solid rgba(255,255,255,.18);
-      background:rgba(255,255,255,.06);
-      color: var(--text);
-      cursor:pointer;
-      transition: transform .18s ease, background .2s ease, border-color .2s ease;
-      font-size:18px;
-      line-height:1;
-    }
-    .shBtn:hover{
-      transform: translateY(-1px);
-      background:rgba(255,255,255,.08);
-      border-color: rgba(255,255,255,.26);
-    }
-    html[data-theme="light"] .shBtn{
-      border-color: rgba(10,20,40,.14);
-      background: rgba(10,20,40,.04);
-    }
-    html[data-theme="light"] .shBtn:hover{
-      border-color: rgba(10,20,40,.22);
-      background: rgba(10,20,40,.06);
-    }
-
-    .shViewport{
-      overflow:hidden;
-      border-radius:16px;
-      border:1px solid rgba(255,255,255,.10);
-      background: rgba(255,255,255,.03);
-    }
-    html[data-theme="light"] .shViewport{
-      border-color: rgba(10,20,40,.10);
-      background: rgba(10,20,40,.03);
-    }
-
-    .shTrack{
-      display:flex;
-      transition: transform .45s cubic-bezier(.2,.8,.2,1);
-      will-change: transform;
-    }
-
-    .shSlide{
-      min-width:100%;
-      position:relative;
-      overflow:hidden;
-      aspect-ratio: 16 / 10;
+    .shotGrid{
       display:grid;
-      place-items:center;
-      color: var(--muted2);
-      font-weight:700;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
     }
+    @media (max-width: 480px){ .shotGrid{grid-template-columns:1fr;} }
 
-    .shSlide img{
-      width:100%;
-      height:100%;
-      object-fit:cover;
-      display:block;
-    }
-
-    .shBadge{
-      position:absolute;
-      top:12px;
-      left:12px;
-      padding:8px 14px;
-      border-radius:999px;
-      background:rgba(0,0,0,.45);
-      border:1px solid rgba(255,255,255,.22);
-      backdrop-filter: blur(10px);
-      font-weight:700;
-      font-size:13px;
-      color:#fff;
-      max-width: calc(100% - 24px);
-      white-space:nowrap;
+    .shot{
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.04);
       overflow:hidden;
-      text-overflow:ellipsis;
+      position:relative;
+      aspect-ratio: 16 / 10;
+      display:grid; place-items:center;
+      color: var(--muted2);
+      font-weight: 800;
+      letter-spacing:.2px;
     }
-    html[data-theme="light"] .shBadge{
-      background:rgba(255,255,255,.72);
-      border-color: rgba(10,20,40,.10);
-      color: var(--text);
+    html[data-theme="light"] .shot{border-color: rgba(10,20,40,.10); background: rgba(10,20,40,.04);}
+    .shot img{width:100%; height:100%; object-fit:cover; display:block;}
+    .shot .tag{
+      position:absolute; left:10px; top:10px;
+      font-size: 12px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(0,0,0,.35);
+      border:1px solid rgba(255,255,255,.12);
+      backdrop-filter: blur(10px);
+      color: #fff;
+      z-index:2;
     }
+    html[data-theme="light"] .shot .tag{background: rgba(255,255,255,.70); color: var(--text); border-color: rgba(10,20,40,.10);}
 
-    .shDots{
-      display:flex;
-      justify-content:center;
-      gap:8px;
-      margin-top:10px;
-    }
-    .shDots span{
-      width:8px;height:8px;
-      border-radius:99px;
-      background:rgba(255,255,255,.28);
-      cursor:pointer;
-      transition: width .2s ease, background .2s ease;
-    }
-    .shDots span.active{
-      width:26px;
-      background:linear-gradient(90deg,#4F7DFF,#2BD2FF);
-    }
-    html[data-theme="light"] .shDots span{
-      background: rgba(10,20,40,.18);
-    }
-
-    /* Sections layout */
     .section{padding: 34px 0;}
     .secTitle{
       display:flex; align-items:flex-end; justify-content:space-between; gap:14px;
@@ -478,6 +572,7 @@
       overflow:hidden;
     }
     html[data-theme="light"] .case{border-color: rgba(10,20,40,.10);}
+
     .caseTop{display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom: 10px;}
     .chips{display:flex; flex-wrap:wrap; gap:8px;}
     .chip{
@@ -487,9 +582,10 @@
       background: rgba(255,255,255,.05);
       border:1px solid rgba(255,255,255,.10);
       color: var(--muted);
-      font-weight: 650;
+      font-weight: 800;
     }
     html[data-theme="light"] .chip{background: rgba(10,20,40,.04); border-color: rgba(10,20,40,.10);}
+
     .case h3{margin: 0 0 6px; font-size: 18px;}
     .case p{margin: 0 0 12px; color: var(--muted);}
 
@@ -501,24 +597,26 @@
       aspect-ratio: 16 / 9;
       display:grid; place-items:center;
       color: var(--muted2);
-      font-weight: 800;
+      font-weight: 900;
       letter-spacing:.2px;
     }
     html[data-theme="light"] .caseShot{border-color: rgba(10,20,40,.10); background: rgba(10,20,40,.03);}
     .caseShot img{width:100%; height:100%; object-fit:cover; display:block;}
 
     .caseActions{display:flex; gap:10px; flex-wrap:wrap; margin-top: 12px;}
+
     .linkBtn{
       padding: 10px 12px;
       border-radius: 14px;
       border: 1px solid rgba(255,255,255,.10);
       background: rgba(255,255,255,.05);
       color: var(--text);
-      font-weight: 750;
+      font-weight: 850;
       cursor:pointer;
       display:inline-flex; align-items:center; gap:8px;
+      transition: transform .18s ease, background .2s ease, border-color .2s ease;
     }
-    .linkBtn:hover{background: rgba(255,255,255,.07); border-color: rgba(255,255,255,.16);}
+    .linkBtn:hover{transform: translateY(-1px); background: rgba(255,255,255,.07); border-color: rgba(255,255,255,.16);}
     html[data-theme="light"] .linkBtn{border-color: rgba(10,20,40,.10); background: rgba(10,20,40,.04);}
     html[data-theme="light"] .linkBtn:hover{background: rgba(10,20,40,.06); border-color: rgba(10,20,40,.16);}
 
@@ -565,15 +663,17 @@
       display:flex; align-items:center; justify-content:space-between;
       border-bottom: 1px solid rgba(255,255,255,.08);
       color: var(--muted);
-      font-weight: 700;
+      font-weight: 900;
       font-size: 13px;
     }
     html[data-theme="light"] .mockHeader{border-bottom-color: rgba(10,20,40,.08);}
     .mockBody{padding: 12px;}
+
     table{width:100%; border-collapse: collapse; font-size: 13px;}
     td,th{padding:8px 8px; border-bottom: 1px solid rgba(255,255,255,.08); color: var(--muted);}
     th{color: var(--text); text-align:left;}
     html[data-theme="light"] td, html[data-theme="light"] th{border-bottom-color: rgba(10,20,40,.08);}
+
     .bar{
       height: 10px; border-radius: 99px;
       background: rgba(255,255,255,.10);
@@ -583,13 +683,31 @@
 
     /* Footer */
     footer{padding: 34px 0 44px; color: var(--muted2);}
-    .footerGrid{display:grid; grid-template-columns: 1.2fr .8fr; gap: 12px;}
-    @media (max-width: 980px){ .footerGrid{grid-template-columns:1fr;} }
-    .copyRow{display:flex; gap:10px; flex-wrap:wrap; margin-top: 10px;}
 
     /* Small helpers */
     .small{font-size:12px; color: var(--muted2);}
     .sr{position:absolute; left:-9999px;}
+
+    /* =========================
+       REVEAL ANIMATION
+    ========================== */
+    .reveal{
+      opacity:0;
+      transform: translateY(16px);
+      transition: opacity .7s ease, transform .7s cubic-bezier(.2,.8,.2,1);
+      will-change: opacity, transform;
+    }
+    .reveal.on{
+      opacity:1;
+      transform:none;
+    }
+
+    @media (prefers-reduced-motion: reduce){
+      .reveal{opacity:1; transform:none; transition:none;}
+      .nav .navPill{transition:none;}
+      .mNavPanel{transition:none;}
+      .burger, .btn, .cta, .linkBtn, .iconBtn{transition:none;}
+    }
   </style>
 </head>
 
@@ -599,18 +717,11 @@
   ========================== -->
   <header class="header">
     <div class="wrap header-inner">
-      <a class="brand" href="#top" aria-label="Back to top">
+      <a class="brand" href="#top" aria-label="Back to top" data-scroll>
         <span class="logoWrap" aria-hidden="true">
-          <svg class="logo" viewBox="0 0 24 24" fill="none">
-            <path d="M12 2.5 21.5 12 12 21.5 2.5 12 12 2.5Z" fill="rgba(255,255,255,.85)"/>
-            <path d="M12 5.7 18.3 12 12 18.3 5.7 12 12 5.7Z" fill="url(#g)"/>
-            <defs>
-              <linearGradient id="g" x1="6" y1="6" x2="19" y2="19" gradientUnits="userSpaceOnUse">
-                <stop stop-color="#4F7DFF"/>
-                <stop offset="1" stop-color="#2BD2FF"/>
-              </linearGradient>
-            </defs>
-          </svg>
+          <img class="logoImg" src="assets/images/logo.png" alt="Alexis Data Systems logo"
+               onerror="this.style.display='none'; this.parentNode.querySelector('.logoFallback').style.display='block';" />
+          <span class="logoFallback" aria-hidden="true"></span>
         </span>
         <span class="brandText">
           <b>Alexis Data Systems</b>
@@ -619,18 +730,25 @@
       </a>
 
       <nav class="nav" aria-label="Primary">
-        <a href="#about" data-nav="about">About</a>
-        <a href="#services" data-nav="services">Services</a>
-        <a href="#cases" data-nav="cases">Cases</a>
-        <a href="#demo" data-nav="demo">Demo</a>
-        <a href="#contact" data-nav="contact">Contact</a>
+        <span class="navPill" id="navPill" aria-hidden="true"></span>
+        <a href="#about" data-nav="about" data-scroll>About</a>
+        <a href="#services" data-nav="services" data-scroll>Services</a>
+        <a href="#cases" data-nav="cases" data-scroll>Cases</a>
+        <a href="#demo" data-nav="demo" data-scroll>Demo</a>
+        <a href="#contact" data-nav="contact" data-scroll>Contact</a>
       </nav>
 
       <div class="hdrRight">
-        <div class="avatarCard" title="Alexis — hover to expand">
+        <!-- Burger (mobile) -->
+        <button class="burger" id="burgerBtn" aria-label="Open menu" aria-expanded="false" aria-controls="mNavPanel" type="button">
+          <span class="burgerLines" aria-hidden="true"><i></i><i></i><i></i></span>
+        </button>
+
+        <!-- Avatar badge -->
+        <div class="avatarCard" title="Hover to expand">
           <div class="avatar" aria-hidden="true">
-            <img src="assets/images/avatar/alexis.jpg" alt=""
-                 onerror="this.remove(); this.parentNode.querySelector('.avatarFallback').style.display='grid';" />
+            <img src="assets/images/avatar.jpg" alt=""
+                 onerror="this.style.display='none'; this.parentNode.querySelector('.avatarFallback').style.display='grid';" />
             <div class="avatarFallback" style="display:none; width:100%; height:100%; place-items:center;">OS</div>
           </div>
           <div class="avatarMeta">
@@ -639,30 +757,57 @@
           </div>
         </div>
 
+        <!-- Theme toggle -->
         <button class="iconBtn" id="themeBtn" aria-label="Toggle theme" title="Theme">
           <span id="themeIcon" aria-hidden="true">🌙</span>
           <span class="sr">Toggle theme</span>
         </button>
 
-        <a class="cta" href="#contact" title="Hire on Fiverr / Contact">Hire on Fiverr</a>
+        <!-- CTA -->
+        <a class="cta" href="#contact" data-scroll title="Hire / Contact">Hire on Fiverr</a>
       </div>
     </div>
   </header>
 
-  <div id="top"></div>
+  <!-- Mobile menu -->
+  <div class="mNavOverlay" id="mNavOverlay" aria-hidden="true"></div>
+  <div class="mNavPanel" id="mNavPanel" role="dialog" aria-modal="true" aria-label="Mobile navigation">
+    <div class="mNavHeader">
+      <div class="mNavTitle">
+        <b>Alexis Data Systems</b>
+        <span>Navigation</span>
+      </div>
+      <button class="iconBtn" id="closeMenuBtn" type="button" aria-label="Close menu">✕</button>
+    </div>
+
+    <div class="mNavLinks" aria-label="Mobile links">
+      <a href="#about" data-close-menu data-scroll>About</a>
+      <a href="#services" data-close-menu data-scroll>Services</a>
+      <a href="#cases" data-close-menu data-scroll>Cases</a>
+      <a href="#demo" data-close-menu data-scroll>Demo</a>
+      <a href="#contact" data-close-menu data-scroll>Contact</a>
+
+      <div class="mNavCTA">
+        <a class="cta" href="#contact" data-close-menu data-scroll>Hire on Fiverr</a>
+        <a class="btn" href="mailto:mr.schljakhta@gmail.com?subject=Project%20Request%20(Alexis%20Data%20Systems)">Email</a>
+      </div>
+    </div>
+  </div>
 
   <!-- =========================
        HERO
   ========================== -->
-  <section class="hero">
+  <div id="top"></div>
+
+  <section class="hero reveal">
     <div class="wrap heroGrid">
       <div class="panel">
         <div class="heroLeft">
           <div class="pill">Systems, not spreadsheets • Excel & Automation</div>
           <h1>Clean business systems built on Excel & Google Sheets.</h1>
           <p class="lead">
-            Я перетворюю хаотичні таблиці на структуровані системи: дашборди, автоматизація, облік і форми —
-            без зайвого “ручняка”, помилок і плутанини.
+            I turn spreadsheet chaos into reliable systems: dashboards, automation, tracking and data entry forms —
+            less manual work, fewer mistakes, more control.
           </p>
 
           <div class="badges">
@@ -672,61 +817,64 @@
           </div>
 
           <div class="heroBtns">
-            <a class="cta" href="#contact">Get your system built</a>
-            <a class="btn" href="#cases">See cases</a>
+            <a class="cta" href="#contact" data-scroll>Get your system built</a>
+            <a class="btn" href="#cases" data-scroll>See cases</a>
             <a class="btn" href="mailto:mr.schljakhta@gmail.com?subject=Project%20Request%20(Alexis%20Data%20Systems)">Email me</a>
           </div>
         </div>
 
         <div class="stats">
-          <div class="stat"><b>20+ yrs</b><span>Excel learning & modeling</span></div>
-          <div class="stat"><b>Automation</b><span>VBA + structured workflows</span></div>
-          <div class="stat"><b>Control</b><span>Reliable dashboards & tracking</span></div>
+          <div class="stat">
+            <b>20+ yrs</b>
+            <span>Excel learning & modeling</span>
+          </div>
+          <div class="stat">
+            <b>Automation</b>
+            <span>VBA + structured workflows</span>
+          </div>
+          <div class="stat">
+            <b>Control</b>
+            <span>Reliable dashboards & tracking</span>
+          </div>
         </div>
       </div>
 
-      <!-- RIGHT HERO: CAROUSEL -->
       <div class="panel heroRight">
-        <div class="showcaseCard">
-          <div class="showcaseTop">
+        <div class="preview">
+          <div class="previewTop">
+            <div class="miniDots" aria-hidden="true">
+              <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+            </div>
             <div class="small">Showcase previews</div>
-            <div class="showcaseNav">
-              <button class="shBtn" data-dir="-1" type="button" aria-label="Previous">‹</button>
-              <button class="shBtn" data-dir="1" type="button" aria-label="Next">›</button>
-            </div>
           </div>
 
-          <div class="shViewport">
-            <div class="shTrack">
-              <div class="shSlide">
-                <div class="shBadge">Finance dashboard</div>
+          <div class="previewBody">
+            <div class="shotGrid">
+              <div class="shot">
+                <span class="tag">Finance dashboard</span>
                 <img src="assets/images/case-1-dashboard.png" alt="Finance dashboard preview"
-                     onerror="this.remove(); this.parentNode.insertAdjacentText('beforeend','Add case-1-dashboard.png');" />
+                     onerror="this.remove(); this.parentNode.append('Add case-1-dashboard.png');" />
               </div>
-              <div class="shSlide">
-                <div class="shBadge">HR onboarding</div>
-                <img src="assets/images/case-2-form.png" alt="HR onboarding preview"
-                     onerror="this.remove(); this.parentNode.insertAdjacentText('beforeend','Add case-2-form.png');" />
+              <div class="shot">
+                <span class="tag">HR onboarding</span>
+                <img src="assets/images/case-2-form.png" alt="HR form preview"
+                     onerror="this.remove(); this.parentNode.append('Add case-2-form.png');" />
               </div>
-              <div class="shSlide">
-                <div class="shBadge">Expense tracker</div>
+              <div class="shot">
+                <span class="tag">Expense tracker</span>
                 <img src="assets/images/case-3-tracker.png" alt="Expense tracker preview"
-                     onerror="this.remove(); this.parentNode.insertAdjacentText('beforeend','Add case-3-tracker.png');" />
+                     onerror="this.remove(); this.parentNode.append('Add case-3-tracker.png');" />
               </div>
-              <div class="shSlide">
-                <div class="shBadge">Sheets KPI system</div>
+              <div class="shot">
+                <span class="tag">Sheets KPI system</span>
                 <img src="assets/images/case-4-gsheets.png" alt="Google Sheets KPI preview"
-                     onerror="this.remove(); this.parentNode.insertAdjacentText('beforeend','Add case-4-gsheets.png');" />
+                     onerror="this.remove(); this.parentNode.append('Add case-4-gsheets.png');" />
               </div>
             </div>
           </div>
-
-          <div class="shDots" aria-label="Carousel dots"></div>
-
-          <div class="small" style="padding:10px 2px 0; opacity:.9;">
-            Tip: завантаж скріни в <code>assets/images/</code> з іменами
-            <code>case-1-dashboard.png</code>, <code>case-2-form.png</code>, <code>case-3-tracker.png</code>, <code>case-4-gsheets.png</code>.
-          </div>
+        </div>
+        <div class="small" style="padding:10px 8px 0; opacity:.9;">
+          Tip: Upload your screenshots into <code>assets/images/</code> and the showcase becomes alive instantly.
         </div>
       </div>
     </div>
@@ -735,12 +883,12 @@
   <!-- =========================
        ABOUT
   ========================== -->
-  <section class="section" id="about">
+  <section class="section reveal" id="about">
     <div class="wrap">
       <div class="secTitle">
         <div>
           <h2>About</h2>
-          <p>Моя спеціалізація — робити з таблиць <b>системи</b>: зрозумілі, підтримувані, масштабовані.</p>
+          <p>I build spreadsheet-based systems that stay clean, scalable and easy to use.</p>
         </div>
       </div>
 
@@ -748,17 +896,17 @@
         <div class="card">
           <div class="ico">🧩</div>
           <h3>System thinking</h3>
-          <p>Структура → правила → контроль. Таблиця перестає “ламатися” від дрібних змін.</p>
+          <p>Structure → rules → control. Your files stop breaking from small changes.</p>
         </div>
         <div class="card">
           <div class="ico">⚙️</div>
           <h3>Automation</h3>
-          <p>VBA / Apps Script / формули — знімаю рутину і мінімізую людський фактор.</p>
+          <p>VBA / Apps Script / formulas — less routine, fewer errors, faster flow.</p>
         </div>
         <div class="card">
           <div class="ico">📈</div>
           <h3>Dashboards</h3>
-          <p>Показники, фільтри, зрозумілі візуалізації — керування, а не “звіт заради звіту”.</p>
+          <p>KPIs, filters, clear visuals — decisions, not “reports for reports”.</p>
         </div>
       </div>
     </div>
@@ -767,12 +915,12 @@
   <!-- =========================
        SERVICES
   ========================== -->
-  <section class="section" id="services">
+  <section class="section reveal" id="services">
     <div class="wrap">
       <div class="secTitle">
         <div>
           <h2>Services</h2>
-          <p>Найчастіші запити, які я закриваю “під ключ”.</p>
+          <p>Most common projects I build end-to-end.</p>
         </div>
       </div>
 
@@ -780,32 +928,32 @@
         <div class="card">
           <div class="ico">💸</div>
           <h3>Finance dashboard (cashflow)</h3>
-          <p>Надходження/витрати, категорії, періоди, план-факт, звіти одним кліком.</p>
+          <p>Income/expenses, categories, periods, plan vs fact, 1-click reports.</p>
         </div>
         <div class="card">
           <div class="ico">👥</div>
           <h3>HR onboarding form</h3>
-          <p>Форма збору даних + валідатори + база + автоматичні документи/листування.</p>
+          <p>Data entry form + validation + database + automated docs & tracking.</p>
         </div>
         <div class="card">
           <div class="ico">🧾</div>
           <h3>Business expense tracker</h3>
-          <p>Облік витрат, аналітика, дедлайни, чеки/категорії, контроль бюджету.</p>
+          <p>Budgets, receipts, limits, analytics, deadlines, clean categories.</p>
         </div>
         <div class="card">
           <div class="ico">📊</div>
           <h3>Google Sheets KPI system</h3>
-          <p>KPI, дашборд команди, ролі/доступи, автозвіти, нагадування, історія змін.</p>
+          <p>Team KPIs, roles, dashboards, alerts, history, automated reporting.</p>
         </div>
         <div class="card">
           <div class="ico">🧠</div>
           <h3>Cleanup & refactor</h3>
-          <p>Приводжу існуючі файли до ладу: структура, назви, захист, документація.</p>
+          <p>Turn messy workbooks into maintainable systems with standards.</p>
         </div>
         <div class="card">
           <div class="ico">🔒</div>
           <h3>Reliability & control</h3>
-          <p>Валідації, логування, контроль помилок, щоб система працювала “в бойових умовах”.</p>
+          <p>Validation, logging, guardrails — stable work “under pressure”.</p>
         </div>
       </div>
     </div>
@@ -814,12 +962,12 @@
   <!-- =========================
        CASES
   ========================== -->
-  <section class="section" id="cases">
+  <section class="section reveal" id="cases">
     <div class="wrap">
       <div class="secTitle">
         <div>
           <h2>Cases</h2>
-          <p>Вітрина кейсів. Пізніше додамо 1-сторінкові PDF (one-pager), але скріни вже дають “вау”.</p>
+          <p>Short, visual showcase. Later we can add 1-page PDFs per case.</p>
         </div>
       </div>
 
@@ -832,7 +980,7 @@
             <span class="small">Case #1</span>
           </div>
           <h3>Finance dashboard (cashflow)</h3>
-          <p>Від “ручних звітів” до системи: контроль бюджету, категорії, план-факт, швидкі зрізи.</p>
+          <p>From manual reporting to a controllable system: categories, plan vs fact, quick exports.</p>
 
           <div class="caseShot">
             <img src="assets/images/case-1-dashboard.png" alt="Case 1 screenshot"
@@ -840,8 +988,8 @@
           </div>
 
           <div class="caseActions">
-            <a class="linkBtn" href="#demo">▶ Try demo</a>
-            <a class="linkBtn" href="#" onclick="alert('Додамо PDF пізніше: assets/pdfs/case-1-onepager.pdf'); return false;">📄 One-pager</a>
+            <a class="linkBtn" href="#demo" data-scroll>▶ Try demo</a>
+            <a class="linkBtn" href="#contact" data-scroll>Request similar</a>
           </div>
         </div>
 
@@ -853,7 +1001,7 @@
             <span class="small">Case #2</span>
           </div>
           <h3>HR onboarding form</h3>
-          <p>Єдина форма збору даних → база → авто-перевірки → готові документи та трекінг статусів.</p>
+          <p>Single form → database → validations → docs, statuses and clean process.</p>
 
           <div class="caseShot">
             <img src="assets/images/case-2-form.png" alt="Case 2 screenshot"
@@ -862,7 +1010,7 @@
 
           <div class="caseActions">
             <a class="linkBtn" href="mailto:mr.schljakhta@gmail.com?subject=HR%20Onboarding%20System%20Request">✉ Email</a>
-            <a class="linkBtn" href="#" onclick="alert('Додамо PDF пізніше: assets/pdfs/case-2-onepager.pdf'); return false;">📄 One-pager</a>
+            <a class="linkBtn" href="#contact" data-scroll>Request similar</a>
           </div>
         </div>
 
@@ -874,7 +1022,7 @@
             <span class="small">Case #3</span>
           </div>
           <h3>Business expense tracker</h3>
-          <p>Витрати, ліміти, категорії, чеки, звіти, анти-помилки. Мінімум ручної роботи.</p>
+          <p>Receipts, limits, categories, reports, anti-error logic and clarity.</p>
 
           <div class="caseShot">
             <img src="assets/images/case-3-tracker.png" alt="Case 3 screenshot"
@@ -882,7 +1030,7 @@
           </div>
 
           <div class="caseActions">
-            <a class="linkBtn" href="#contact">Request similar</a>
+            <a class="linkBtn" href="#contact" data-scroll>Request similar</a>
           </div>
         </div>
 
@@ -894,7 +1042,7 @@
             <span class="small">Case #4</span>
           </div>
           <h3>Google Sheets KPI system</h3>
-          <p>KPI, ролі, дашборд команди, автоматичні звіти і контроль якості даних.</p>
+          <p>Team KPI dashboard, roles, automation and consistent data quality.</p>
 
           <div class="caseShot">
             <img src="assets/images/case-4-gsheets.png" alt="Case 4 screenshot"
@@ -902,7 +1050,8 @@
           </div>
 
           <div class="caseActions">
-            <a class="linkBtn" href="#demo">▶ Try demo</a>
+            <a class="linkBtn" href="#demo" data-scroll>▶ Try demo</a>
+            <a class="linkBtn" href="#contact" data-scroll>Request similar</a>
           </div>
         </div>
       </div>
@@ -910,21 +1059,21 @@
   </section>
 
   <!-- =========================
-       DEMO
+       DEMO (MINI GAME)
   ========================== -->
-  <section class="section" id="demo">
+  <section class="section reveal" id="demo">
     <div class="wrap">
       <div class="secTitle">
         <div>
           <h2>Demo</h2>
-          <p>Міні-гра: обери “хаос → система → автоматизація” і подивись, який результат виходить.</p>
+          <p>Mini game: choose “chaos → system → automation” and see the output.</p>
         </div>
       </div>
 
       <div class="demoWrap">
         <div class="card">
           <h3 style="margin:0 0 6px;">Build your mini-case</h3>
-          <p style="margin:0; color:var(--muted);">Комбінуй елементи — і я покажу, що саме буде зроблено.</p>
+          <p style="margin:0; color:var(--muted);">Combine elements — and the result updates instantly.</p>
 
           <div class="selectRow" role="group" aria-label="Demo builder controls">
             <div>
@@ -956,18 +1105,16 @@
             </div>
           </div>
 
-          <div class="copyRow">
-            <button class="btn" id="presetBtn" type="button">Use preset (Manual reports → Finance dashboard → VBA)</button>
+          <div class="caseActions" style="margin-top:12px;">
+            <button class="btn" id="presetBtn" type="button">Use preset</button>
             <button class="btn" id="randomBtn" type="button">Random</button>
           </div>
-          <div class="small" style="margin-top:10px;">Порада: після вибору — прокрути праворуч і подивись “result”.</div>
+          <div class="small" style="margin-top:10px;">Tip: this is interactive—try changing combos.</div>
         </div>
 
         <div class="result" aria-live="polite">
           <h3 id="rTitle">Manual reports → Finance dashboard → VBA</h3>
-          <p id="rDesc">
-            Замість ручних звітів: дашборд cashflow з категоріями, план-факт, фільтрами і кнопками “оновити/експорт”.
-          </p>
+          <p id="rDesc">Instead of manual reports: a cashflow dashboard with filters, plan vs fact, export and 1-click refresh.</p>
           <div class="chips" id="rChips">
             <span class="chip">Less chaos</span>
             <span class="chip">More control</span>
@@ -992,14 +1139,14 @@
               </table>
 
               <div class="caseActions" style="margin-top:12px;">
-                <a class="linkBtn" href="#contact">Get this built</a>
-                <a class="linkBtn" href="#cases">See similar cases</a>
+                <a class="linkBtn" href="#contact" data-scroll>Get this built</a>
+                <a class="linkBtn" href="#cases" data-scroll>See cases</a>
               </div>
             </div>
           </div>
 
           <div class="small" style="margin-top:10px;">
-            Цей “демо-конструктор” — саме те, що ти хотів: користувач грається і розуміє логіку продукту.
+            This interactive block makes the site feel alive without being heavy.
           </div>
         </div>
       </div>
@@ -1009,34 +1156,34 @@
   <!-- =========================
        CONTACT
   ========================== -->
-  <section class="section" id="contact">
+  <section class="section reveal" id="contact">
     <div class="wrap">
       <div class="secTitle">
         <div>
           <h2>Contact</h2>
-          <p>Напиши коротко: що болить, що є зараз, який результат хочеш. Я відповім з планом і оцінкою.</p>
+          <p>Send a short brief: what you have now, what hurts, what result you want.</p>
         </div>
       </div>
 
-      <div class="footerGrid">
+      <div class="grid3" style="grid-template-columns: 1.2fr .8fr; gap:12px;">
         <div class="card">
           <h3 style="margin:0 0 6px;">Email</h3>
-          <p style="margin:0; color:var(--muted);">Основний канал. Можна одразу з файлами/скрінами.</p>
+          <p style="margin:0; color:var(--muted);">Main channel. You can attach files/screenshots.</p>
 
-          <div class="copyRow">
+          <div class="caseActions" style="margin-top:12px;">
             <a class="linkBtn" href="mailto:mr.schljakhta@gmail.com?subject=Project%20Request%20(Alexis%20Data%20Systems)">✉ mr.schljakhta@gmail.com</a>
             <button class="linkBtn" type="button" onclick="copyText('mr.schljakhta@gmail.com')">📋 Copy</button>
           </div>
 
           <div class="small" style="margin-top:10px;">
-            Fiverr: додаси свій лінк — я вставлю в кнопку “Hire on Fiverr”.
+            Fiverr username: <b>Alex E</b> (add your profile link later and I’ll connect the CTA button).
           </div>
         </div>
 
         <div class="card">
           <h3 style="margin:0 0 6px;">What to include</h3>
           <p style="margin:0; color:var(--muted);">
-            1) Ніша/процес • 2) Які таблиці є • 3) Ролі/користувачі • 4) Який результат потрібен.
+            1) Process • 2) Current files • 3) Roles/users • 4) Desired outcome.
           </p>
 
           <div class="caseActions" style="margin-top:12px;">
@@ -1047,7 +1194,7 @@
     </div>
   </section>
 
-  <footer>
+  <footer class="reveal">
     <div class="wrap">
       <div class="small">© <span id="y"></span> Alexis Data Systems. Built on GitHub Pages.</div>
     </div>
@@ -1055,7 +1202,7 @@
 
   <script>
     // =========================
-    // THEME
+    // THEME (default: dark)
     // =========================
     const root = document.documentElement;
     const themeBtn = document.getElementById('themeBtn');
@@ -1075,18 +1222,121 @@
     });
 
     // =========================
-    // NAV ACTIVE
+    // MOBILE MENU (BURGER)
+    // =========================
+    const burgerBtn = document.getElementById('burgerBtn');
+    const mNavPanel = document.getElementById('mNavPanel');
+    const mNavOverlay = document.getElementById('mNavOverlay');
+    const closeMenuBtn = document.getElementById('closeMenuBtn');
+
+    function openMenu(){
+      document.body.classList.add('menuOpen');
+      burgerBtn?.setAttribute('aria-expanded', 'true');
+    }
+    function closeMenu(){
+      document.body.classList.remove('menuOpen');
+      burgerBtn?.setAttribute('aria-expanded', 'false');
+    }
+
+    burgerBtn?.addEventListener('click', () => {
+      document.body.classList.contains('menuOpen') ? closeMenu() : openMenu();
+    });
+    mNavOverlay?.addEventListener('click', closeMenu);
+    closeMenuBtn?.addEventListener('click', closeMenu);
+    document.addEventListener('keydown', (e) => { if(e.key === 'Escape') closeMenu(); });
+
+    document.querySelectorAll('[data-close-menu]').forEach(a => {
+      a.addEventListener('click', () => setTimeout(closeMenu, 60));
+    });
+
+    // =========================
+    // SMOOTH SCROLL (EASING)
+    // =========================
+    function easeOutCubic(t){ return 1 - Math.pow(1 - t, 3); }
+
+    function smoothScrollTo(targetY, duration = 700){
+      const startY = window.scrollY || window.pageYOffset;
+      const diff = targetY - startY;
+      const start = performance.now();
+
+      function step(now){
+        const p = Math.min(1, (now - start) / duration);
+        const eased = easeOutCubic(p);
+        window.scrollTo(0, startY + diff * eased);
+        if(p < 1) requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    }
+
+    function scrollToId(id){
+      const el = document.getElementById(id);
+      if(!el) return;
+      const y = el.getBoundingClientRect().top + window.scrollY - (parseInt(getComputedStyle(document.documentElement).getPropertyValue('--headerH')) + 14);
+      smoothScrollTo(Math.max(0, y), 760);
+    }
+
+    // intercept clicks
+    document.querySelectorAll('a[data-scroll], a[href^="#"][data-scroll]').forEach(a => {
+      a.addEventListener('click', (e) => {
+        const href = a.getAttribute('href') || '';
+        if(!href.startsWith('#')) return;
+        const id = href.replace('#','') || 'top';
+        e.preventDefault();
+        history.pushState(null, "", "#" + id);
+        scrollToId(id);
+      });
+    });
+
+    // if loaded with hash -> smooth jump
+    window.addEventListener('load', () => {
+      const h = (location.hash || '').replace('#','');
+      if(h) setTimeout(() => scrollToId(h), 80);
+    });
+
+    // =========================
+    // NAV ACTIVE + SLIDING PILL
     // =========================
     const navLinks = [...document.querySelectorAll('.nav a[data-nav]')];
     const sections = navLinks
       .map(a => document.getElementById(a.getAttribute('data-nav')))
       .filter(Boolean);
 
-    const obs = new IntersectionObserver((entries) => {
-      const visible = entries.filter(e => e.isIntersecting).sort((a,b) => b.intersectionRatio - a.intersectionRatio)[0];
-      if(!visible) return;
-      const id = visible.target.id;
+    const navPill = document.getElementById('navPill');
+    const mLinks = [...document.querySelectorAll('.mNavLinks a[href^="#"]')];
+
+    function setActive(id){
       navLinks.forEach(a => a.classList.toggle('active', a.getAttribute('data-nav') === id));
+
+      mLinks.forEach(a => {
+        const hid = (a.getAttribute('href') || '').replace('#','');
+        a.classList.toggle('mActive', hid === id);
+      });
+
+      const a = navLinks.find(x => x.getAttribute('data-nav') === id);
+      if(!a || !navPill) return;
+
+      const nav = a.closest('.nav');
+      if(!nav) return;
+
+      const rA = a.getBoundingClientRect();
+      const rN = nav.getBoundingClientRect();
+
+      const x = (rA.left - rN.left) + nav.scrollLeft;
+      const w = rA.width;
+
+      navPill.style.width = w + 'px';
+      navPill.style.transform = `translateX(${x}px)`;
+      navPill.style.opacity = '1';
+    }
+
+    const obs = new IntersectionObserver((entries) => {
+      const visible = entries
+        .filter(e => e.isIntersecting)
+        .sort((a,b) => b.intersectionRatio - a.intersectionRatio)[0];
+      if(!visible) return;
+
+      const id = visible.target.id;
+      setActive(id);
       history.replaceState(null, "", "#" + id);
     }, { rootMargin: "-45% 0px -50% 0px", threshold: [0.15, 0.25, 0.35, 0.5, 0.75] });
 
@@ -1094,10 +1344,17 @@
 
     function setActiveFromHash(){
       const h = (location.hash || "").replace("#","");
-      navLinks.forEach(a => a.classList.toggle('active', a.getAttribute('data-nav') === h));
+      if(!h) return;
+      setActive(h);
     }
     window.addEventListener('hashchange', setActiveFromHash);
-    setActiveFromHash();
+    window.addEventListener('resize', () => {
+      const h = (location.hash || "").replace("#","");
+      if(h) setActive(h);
+    });
+
+    // fallback active on start
+    setTimeout(() => setActive((location.hash || '#about').replace('#','')), 120);
 
     // =========================
     // DEMO BUILDER
@@ -1114,17 +1371,17 @@
 
     function buildDesc(chaos, system, auto){
       const map = {
-        "Finance dashboard": "Дашборд cashflow з категоріями, план-факт, фільтрами і швидким експортом.",
-        "HR onboarding form": "Форма + база + валідатори + статуси + автоматичні документи/листи.",
-        "Business expense tracker": "Облік витрат, ліміти, чеки, категорії, аналітика і контроль помилок.",
-        "Google Sheets KPI system": "KPI, дашборд команди, ролі/доступи, історія змін, автозвіти."
+        "Finance dashboard": "a cashflow dashboard with categories, plan vs fact, filters and quick export.",
+        "HR onboarding form": "a single onboarding form + database + validations + statuses + docs automation.",
+        "Business expense tracker": "expense tracking with limits, receipts, categories, analytics and anti-error logic.",
+        "Google Sheets KPI system": "team KPIs, roles, dashboard, history and automated reporting."
       };
       const autoMap = {
-        "VBA": "Кнопки/макроси, валідації, автозаповнення, експорт, захист.",
-        "Google Apps Script": "Тригери, автозвіти, нотифікації, інтеграції.",
-        "Smart formulas + validations": "Сильна логіка на формулах, перевірки, контроль вводу."
+        "VBA": "Buttons/macros, validations, autofill, exports, protection.",
+        "Google Apps Script": "Triggers, notifications, integrations, scheduled reports.",
+        "Smart formulas + validations": "Strong formula logic, validations, input control."
       };
-      return `Замість “${chaos}”: ${map[system] || "структурована система"} Автоматизація: ${autoMap[auto] || auto}.`;
+      return `Instead of “${chaos}”: ${map[system] || "a structured system"} Automation: ${autoMap[auto] || auto}.`;
     }
 
     function render(){
@@ -1154,6 +1411,7 @@
     }
 
     [selChaos, selSystem, selAuto].forEach(el => el.addEventListener('change', render));
+
     document.getElementById('presetBtn').addEventListener('click', () => {
       selChaos.value = "Manual reports";
       selSystem.value = "Finance dashboard";
@@ -1172,50 +1430,19 @@
     render();
 
     // =========================
-    // SHOWCASE CAROUSEL
+    // REVEAL ON SCROLL
     // =========================
-    const track = document.querySelector(".shTrack");
-    const slides = document.querySelectorAll(".shSlide");
-    const dotsBox = document.querySelector(".shDots");
-    const buttons = document.querySelectorAll(".shBtn");
-    let index = 0;
-
-    if(track && slides.length && dotsBox){
-      slides.forEach((_, i) => {
-        const d = document.createElement("span");
-        if(i === 0) d.classList.add("active");
-        d.addEventListener("click", () => go(i));
-        dotsBox.appendChild(d);
+    const revealEls = [...document.querySelectorAll('.reveal')];
+    const rObs = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if(e.isIntersecting){
+          e.target.classList.add('on');
+          rObs.unobserve(e.target);
+        }
       });
+    }, { threshold: 0.12 });
 
-      const dots = dotsBox.querySelectorAll("span");
-
-      function go(i){
-        index = Math.max(0, Math.min(slides.length - 1, i));
-        track.style.transform = `translateX(${-index * 100}%)`;
-        dots.forEach((d, n) => d.classList.toggle("active", n === index));
-      }
-
-      buttons.forEach(b => {
-        b.addEventListener("click", () => go(index + Number(b.dataset.dir)));
-      });
-
-      // swipe (mobile)
-      let startX = null;
-      const viewport = document.querySelector(".shViewport");
-      if(viewport){
-        viewport.addEventListener("touchstart", (e)=>{ startX = e.touches[0].clientX; }, {passive:true});
-        viewport.addEventListener("touchend", (e)=>{
-          if(startX === null) return;
-          const endX = e.changedTouches[0].clientX;
-          const dx = endX - startX;
-          if(Math.abs(dx) > 40){
-            go(index + (dx < 0 ? 1 : -1));
-          }
-          startX = null;
-        }, {passive:true});
-      }
-    }
+    revealEls.forEach(el => rObs.observe(el));
 
     // =========================
     // Helpers
