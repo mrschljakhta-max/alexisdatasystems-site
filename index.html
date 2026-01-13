@@ -1,1122 +1,1126 @@
 <!doctype html>
-<html lang="en">
+<html lang="uk" data-theme="dark">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="color-scheme" content="dark light">
   <title>Alexis Data Systems — Excel & Google Sheets Automation</title>
-  <meta name="description" content="Clean business systems built on Excel & Google Sheets. Dashboards, automation, onboarding forms, tracking systems." />
-  <meta name="theme-color" content="#0b1020" />
+  <meta name="description" content="Clean business systems built on Excel & Google Sheets. Dashboards, automation, tracking, onboarding." />
 
   <style>
     /* =========================
        THEME TOKENS
     ========================== */
     :root{
-      --bg0:#070a13;
-      --bg1:#0b1020;
-      --bg2:#0f1630;
-      --card:#0e1426cc;
-      --card2:#0b1327cc;
-      --stroke:#ffffff14;
-      --stroke2:#ffffff1f;
-      --text:#eaf0ff;
-      --muted:#b7c0da;
-      --muted2:#8f9ab8;
-      --accent1:#6a5cff;
-      --accent2:#29d3ff;
-      --good:#37e6a0;
-      --warn:#ffd36a;
-      --shadow: 0 18px 60px rgba(0,0,0,.45);
+      --bg0:#070A14;
+      --bg1:#0B1022;
+      --card: rgba(255,255,255,.06);
+      --card2: rgba(255,255,255,.08);
+      --stroke: rgba(255,255,255,.10);
+      --stroke2: rgba(255,255,255,.14);
+      --text:#EAF0FF;
+      --muted:#B9C4E6;
+      --muted2:#8E9AC3;
+      --accent:#4F7DFF;
+      --accent2:#2BD2FF;
+      --good:#33D69F;
+      --warn:#FFCF5A;
+      --shadow: 0 18px 55px rgba(0,0,0,.45);
+      --shadow2: 0 10px 25px rgba(0,0,0,.35);
       --radius: 18px;
-
-      --container: 1120px;
-      --navH: 74px;
-      --blur: 14px;
+      --radius2: 24px;
+      --max: 1120px;
+      --headerH: 78px;
     }
+
     html[data-theme="light"]{
-      --bg0:#f7f9ff;
-      --bg1:#f2f5ff;
-      --bg2:#ffffff;
-      --card:#ffffffcc;
-      --card2:#ffffffcc;
-      --stroke:#0b102014;
-      --stroke2:#0b10201f;
-      --text:#0b1020;
-      --muted:#364365;
-      --muted2:#5b6a8f;
-      --shadow: 0 18px 60px rgba(10,20,60,.16);
+      --bg0:#F7F8FC;
+      --bg1:#EEF1FB;
+      --card: rgba(10,20,40,.06);
+      --card2: rgba(10,20,40,.08);
+      --stroke: rgba(10,20,40,.10);
+      --stroke2: rgba(10,20,40,.14);
+      --text:#0E1633;
+      --muted:#2C3B6B;
+      --muted2:#55679E;
+      --accent:#2C63FF;
+      --accent2:#00B7FF;
+      --shadow: 0 18px 55px rgba(15,25,55,.14);
+      --shadow2: 0 10px 25px rgba(15,25,55,.12);
     }
 
     *{box-sizing:border-box}
-    html,body{height:100%}
     body{
       margin:0;
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Inter, Arial, "Apple Color Emoji","Segoe UI Emoji";
-      color:var(--text);
+      font: 16px/1.55 system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans", "Apple Color Emoji","Segoe UI Emoji";
+      color: var(--text);
       background:
-        radial-gradient(900px 520px at 20% 10%, rgba(106,92,255,.22), transparent 60%),
-        radial-gradient(900px 520px at 70% 30%, rgba(41,211,255,.14), transparent 60%),
-        radial-gradient(900px 520px at 70% 85%, rgba(55,230,160,.10), transparent 65%),
-        linear-gradient(180deg, var(--bg0), var(--bg1) 45%, var(--bg0));
-      overflow-x:hidden;
+        radial-gradient(900px 500px at 15% 0%, rgba(79,125,255,.25), transparent 60%),
+        radial-gradient(900px 600px at 85% 10%, rgba(43,210,255,.18), transparent 62%),
+        linear-gradient(180deg, var(--bg0), var(--bg1));
+      min-height:100vh;
     }
 
-    a{color:inherit;text-decoration:none}
-    .wrap{max-width:var(--container); margin:0 auto; padding:0 18px}
-    .spacer{height:14px}
+    a{color:inherit; text-decoration:none}
+    .wrap{max-width:var(--max); margin:0 auto; padding: 0 18px;}
 
     /* =========================
-       NAV (GLOBAL HEADER)
+       HEADER (STICKY)
     ========================== */
-    .nav{
-      position:sticky; top:0; z-index:999;
-      height:var(--navH);
-      backdrop-filter: blur(var(--blur));
-      -webkit-backdrop-filter: blur(var(--blur));
-      background: linear-gradient(180deg, rgba(10,14,30,.72), rgba(10,14,30,.35));
-      border-bottom:1px solid var(--stroke);
+    .header{
+      position:sticky; top:0; z-index:50;
+      height: var(--headerH);
+      display:flex; align-items:center;
+      backdrop-filter: blur(14px);
+      background: linear-gradient(180deg, rgba(0,0,0,.35), rgba(0,0,0,.15));
+      border-bottom: 1px solid rgba(255,255,255,.06);
     }
-    html[data-theme="light"] .nav{
-      background: linear-gradient(180deg, rgba(255,255,255,.78), rgba(255,255,255,.55));
+    html[data-theme="light"] .header{
+      background: linear-gradient(180deg, rgba(255,255,255,.75), rgba(255,255,255,.55));
+      border-bottom: 1px solid rgba(10,20,40,.08);
     }
-    .navin{
-      height:var(--navH);
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:16px;
+    .header-inner{display:flex; align-items:center; justify-content:space-between; gap:14px; width:100%;}
+    .brand{
+      display:flex; align-items:center; gap:12px;
+      padding: 10px 10px;
+      border-radius: 999px;
+      transition: background .2s ease, transform .2s ease;
     }
+    .brand:hover{background: rgba(255,255,255,.06); transform: translateY(-1px);}
+    html[data-theme="light"] .brand:hover{background: rgba(10,20,40,.06);}
 
-    /* Brand: logo + hover-expand signature */
-    .brandLink{
-      display:flex;
-      align-items:center;
-      gap:12px;
-      min-width: 220px;
-    }
-
-    .brandBadge{
-      width:44px; height:44px;
-      border-radius: 16px;
+    /* Logo container – акуратно, без “квадрата-гіганта” */
+    .logoWrap{
+      width:44px; height:44px; border-radius: 14px;
       display:grid; place-items:center;
-      background: linear-gradient(135deg, rgba(106,92,255,.28), rgba(41,211,255,.22));
-      border:1px solid var(--stroke2);
-      box-shadow: 0 10px 30px rgba(0,0,0,.25);
-      overflow:hidden;
+      background: radial-gradient(70% 70% at 30% 20%, rgba(79,125,255,.45), rgba(43,210,255,.18));
+      border: 1px solid rgba(255,255,255,.14);
+      box-shadow: var(--shadow2);
       position:relative;
-    }
-    .brandBadge img{
-      width:100%; height:100%; object-fit:cover;
-      display:none;
-    }
-    .brandBadge .logoSvg{
-      width:26px; height:26px; display:block;
-      filter: drop-shadow(0 12px 20px rgba(0,0,0,.25));
-    }
-
-    /* On hover: fade logo -> avatar (optional) */
-    .brandLink:hover .brandBadge img{display:block}
-    .brandLink:hover .brandBadge .logoSvg{display:none}
-
-    .brandText{
-      display:flex; flex-direction:column; line-height:1.1;
-      max-width: 0;
       overflow:hidden;
-      opacity:.0;
-      transform: translateX(-6px);
-      transition: max-width .35s ease, opacity .25s ease, transform .35s ease;
     }
-    .brandLink:hover .brandText{
-      max-width: 240px;
-      opacity:1;
-      transform: translateX(0);
+    html[data-theme="light"] .logoWrap{
+      border: 1px solid rgba(10,20,40,.12);
     }
-    .brandName{font-weight:800; letter-spacing:.2px}
-    .brandSub{font-size:12px; color:var(--muted2); margin-top:2px}
+    .logoWrap:before{
+      content:"";
+      position:absolute; inset:-40%;
+      background: conic-gradient(from 210deg, rgba(255,255,255,.14), transparent 35%, rgba(255,255,255,.10));
+      animation: spin 6s linear infinite;
+      opacity:.55;
+    }
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .logo{
+      width:22px; height:22px; position:relative; z-index:1;
+      filter: drop-shadow(0 6px 10px rgba(0,0,0,.25));
+    }
+    .brandText{display:flex; flex-direction:column; line-height:1.1}
+    .brandText b{font-size:16px; letter-spacing:.2px}
+    .brandText span{font-size:12px; color:var(--muted2)}
 
-    .navlinks{
-      display:flex; gap:18px; align-items:center;
-    }
-    .navlinks a{
-      font-size:14px;
-      color:var(--muted);
+    .nav{display:flex; align-items:center; gap:8px; flex-wrap:wrap; justify-content:center;}
+    .nav a{
+      position:relative;
       padding:10px 12px;
-      border-radius: 12px;
-      border:1px solid transparent;
-      transition: .18s ease;
+      border-radius: 999px;
+      color: var(--muted);
+      transition: background .2s ease, color .2s ease;
+      font-weight: 520;
     }
-    .navlinks a:hover{
-      color:var(--text);
-      border-color: var(--stroke);
-      background: rgba(255,255,255,.04);
+    .nav a:hover{background: rgba(255,255,255,.06); color: var(--text);}
+    html[data-theme="light"] .nav a:hover{background: rgba(10,20,40,.06);}
+    .nav a.active{
+      color: var(--text);
+      background: linear-gradient(90deg, rgba(79,125,255,.25), rgba(43,210,255,.18));
+      border: 1px solid rgba(255,255,255,.12);
     }
-    .navlinks a.active{
-      color:var(--text);
-      border-color: rgba(106,92,255,.30);
-      background: linear-gradient(135deg, rgba(106,92,255,.18), rgba(41,211,255,.10));
-      box-shadow: 0 12px 32px rgba(0,0,0,.18);
+    html[data-theme="light"] .nav a.active{
+      border: 1px solid rgba(10,20,40,.10);
     }
 
-    .navright{display:flex; align-items:center; gap:10px}
+    .hdrRight{display:flex; align-items:center; gap:10px;}
 
-    .btn{
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      gap:10px;
-      padding:12px 14px;
-      border-radius: 16px;
-      border:1px solid var(--stroke2);
-      background: rgba(255,255,255,.04);
-      color:var(--text);
-      font-weight:700;
-      font-size:14px;
+    /* Avatar -> hover “розкриття” з підписом */
+    .avatarCard{
+      display:flex; align-items:center; gap:10px;
+      padding: 8px 10px;
+      border-radius: 999px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.05);
+      box-shadow: var(--shadow2);
+      overflow:hidden;
+      max-width: 52px;
+      transition: max-width .25s ease, background .2s ease, border-color .2s ease;
+      cursor: default;
+    }
+    .avatarCard:hover{max-width: 240px; background: rgba(255,255,255,.07); border-color: rgba(255,255,255,.16);}
+    html[data-theme="light"] .avatarCard{border-color: rgba(10,20,40,.10); background: rgba(10,20,40,.04);}
+    html[data-theme="light"] .avatarCard:hover{background: rgba(10,20,40,.06); border-color: rgba(10,20,40,.14);}
+
+    .avatar{
+      width:36px; height:36px; border-radius: 12px;
+      background: linear-gradient(135deg, rgba(79,125,255,.55), rgba(43,210,255,.35));
+      border:1px solid rgba(255,255,255,.12);
+      display:grid; place-items:center;
+      overflow:hidden;
+      flex:0 0 auto;
+    }
+    .avatar img{width:100%; height:100%; object-fit:cover; display:block}
+    .avatarFallback{font-weight:800; letter-spacing:.5px; font-size:12px}
+    .avatarMeta{min-width: 160px}
+    .avatarMeta b{display:block; font-size:14px; line-height:1.1}
+    .avatarMeta span{display:block; font-size:12px; color:var(--muted2); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+
+    .iconBtn{
+      width:44px; height:44px;
+      border-radius: 14px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.06);
+      display:grid; place-items:center;
       cursor:pointer;
-      transition:.18s ease;
-      user-select:none;
+      transition: transform .18s ease, background .2s ease, border-color .2s ease;
     }
-    .btn:hover{
-      transform: translateY(-1px);
-      border-color: rgba(255,255,255,.26);
-      background: rgba(255,255,255,.07);
-    }
-    html[data-theme="light"] .btn:hover{
-      border-color: rgba(10,16,32,.22);
-      background: rgba(10,16,32,.04);
-    }
+    .iconBtn:hover{transform: translateY(-1px); background: rgba(255,255,255,.08); border-color: rgba(255,255,255,.18);}
+    html[data-theme="light"] .iconBtn{border-color: rgba(10,20,40,.12); background: rgba(10,20,40,.04);}
+    html[data-theme="light"] .iconBtn:hover{background: rgba(10,20,40,.06); border-color: rgba(10,20,40,.18);}
 
-    .btn.primary{
-      border: none;
-      background: linear-gradient(135deg, var(--accent1), var(--accent2));
-      color: #071021;
-      box-shadow: 0 16px 50px rgba(41,211,255,.18);
+    .cta{
+      padding: 12px 16px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, rgba(79,125,255,.95), rgba(43,210,255,.9));
+      color:#061023;
+      font-weight: 750;
+      letter-spacing:.2px;
+      border:0;
+      cursor:pointer;
+      transition: transform .18s ease, filter .2s ease;
+      box-shadow: 0 12px 28px rgba(79,125,255,.25);
+      white-space:nowrap;
     }
-    .btn.primary:hover{filter:saturate(1.05)}
-
-    .btn.iconbtn{
-      width:46px; height:46px;
-      padding:0;
-      border-radius: 16px;
-    }
+    .cta:hover{transform: translateY(-1px); filter: brightness(1.04);}
 
     /* =========================
-       LAYOUT SECTIONS
+       SECTIONS
     ========================== */
-    main{padding-bottom:80px}
-    section{
-      scroll-margin-top: calc(var(--navH) + 18px);
-      padding: 56px 0;
-    }
-
-    /* HERO */
+    section{scroll-margin-top: calc(var(--headerH) + 18px);}
     .hero{
-      padding: 44px 0 26px;
+      padding: 54px 0 18px;
     }
     .heroGrid{
       display:grid;
-      grid-template-columns: 1.2fr .8fr;
-      gap:18px;
-      align-items:start;
+      grid-template-columns: 1.25fr .95fr;
+      gap: 18px;
+      align-items:stretch;
     }
     @media (max-width: 980px){
-      .heroGrid{grid-template-columns: 1fr}
-      .navlinks{display:none}
-      .brandText{max-width:240px; opacity:1; transform:none}
+      .heroGrid{grid-template-columns:1fr; }
+      .nav{display:none;} /* мобільно простіше; якщо треба — додамо бургер */
     }
-
-    .heroCard{
-      border-radius: 30px;
-      padding: 28px;
+    .panel{
+      border-radius: var(--radius2);
+      border: 1px solid rgba(255,255,255,.10);
       background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
-      border:1px solid var(--stroke);
       box-shadow: var(--shadow);
-      position:relative;
       overflow:hidden;
     }
-    html[data-theme="light"] .heroCard{
-      background: linear-gradient(180deg, rgba(10,16,32,.04), rgba(10,16,32,.02));
+    html[data-theme="light"] .panel{border-color: rgba(10,20,40,.10);}
+
+    .heroLeft{padding: 26px 26px 18px;}
+    .pill{
+      display:inline-flex; gap:8px; align-items:center;
+      border-radius: 999px;
+      padding: 8px 12px;
+      background: rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.10);
+      color: var(--muted);
+      font-size: 13px;
+    }
+    html[data-theme="light"] .pill{background: rgba(10,20,40,.05); border-color: rgba(10,20,40,.10);}
+    h1{
+      margin: 14px 0 10px;
+      font-size: 52px;
+      line-height: 1.05;
+      letter-spacing: -1.2px;
+    }
+    @media (max-width: 560px){ h1{font-size: 40px;} }
+
+    .lead{color: var(--muted); font-size: 17px; max-width: 60ch; margin: 0 0 16px;}
+    .badges{display:flex; flex-wrap:wrap; gap:10px; margin: 16px 0 18px;}
+    .badge{
+      display:inline-flex; align-items:center; gap:10px;
+      padding:10px 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.05);
+      border: 1px solid rgba(255,255,255,.10);
+      color: var(--muted);
+      font-weight: 600;
+      font-size: 13px;
+    }
+    html[data-theme="light"] .badge{background: rgba(10,20,40,.04); border-color: rgba(10,20,40,.10);}
+    .tick{
+      width:18px; height:18px; border-radius: 6px;
+      display:grid; place-items:center;
+      background: rgba(51,214,159,.16);
+      border: 1px solid rgba(51,214,159,.35);
+      color: var(--good);
+      font-weight: 900;
+      font-size: 12px;
     }
 
-    .pill{
-      display:inline-flex;
-      align-items:center;
+    .heroBtns{display:flex; flex-wrap:wrap; gap:10px; margin-top: 10px;}
+    .btn{
+      padding: 12px 14px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.05);
+      color: var(--text);
+      cursor:pointer;
+      transition: transform .18s ease, background .2s ease, border-color .2s ease;
+      font-weight: 700;
+    }
+    .btn:hover{transform: translateY(-1px); background: rgba(255,255,255,.07); border-color: rgba(255,255,255,.16);}
+    html[data-theme="light"] .btn{border-color: rgba(10,20,40,.10); background: rgba(10,20,40,.04);}
+    html[data-theme="light"] .btn:hover{background: rgba(10,20,40,.06); border-color: rgba(10,20,40,.16);}
+
+    .stats{
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
       gap:10px;
-      padding:8px 12px;
-      border-radius: 999px;
-      border:1px solid var(--stroke2);
-      color:var(--muted);
-      font-size:13px;
+      padding: 14px;
+      border-top: 1px solid rgba(255,255,255,.08);
+      background: rgba(0,0,0,.10);
+    }
+    html[data-theme="light"] .stats{background: rgba(255,255,255,.55); border-top-color: rgba(10,20,40,.08);}
+    .stat{
+      padding: 14px;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,.10);
       background: rgba(255,255,255,.04);
     }
-    .h1{
-      margin: 16px 0 10px;
-      font-size: clamp(38px, 4vw, 56px);
-      line-height: 1.03;
-      letter-spacing: -1px;
-      font-weight: 900;
+    html[data-theme="light"] .stat{border-color: rgba(10,20,40,.10); background: rgba(10,20,40,.04);}
+    .stat b{display:block; font-size: 24px;}
+    .stat span{color: var(--muted); font-size: 13px;}
+
+    /* Right hero: preview card (place for images) */
+    .heroRight{padding: 16px;}
+    .preview{
+      border-radius: 22px;
+      border: 1px solid rgba(255,255,255,.10);
+      background:
+        radial-gradient(800px 420px at 20% 10%, rgba(79,125,255,.22), transparent 55%),
+        radial-gradient(700px 420px at 80% 20%, rgba(43,210,255,.16), transparent 55%),
+        rgba(255,255,255,.04);
+      overflow:hidden;
+      box-shadow: var(--shadow2);
     }
-    .lead{
-      margin: 0 0 18px;
-      color: var(--muted);
-      font-size: 16px;
-      line-height:1.6;
-      max-width: 56ch;
+    html[data-theme="light"] .preview{border-color: rgba(10,20,40,.10);}
+    .previewTop{
+      padding: 14px 14px 10px;
+      display:flex; align-items:center; justify-content:space-between;
+      gap:10px;
     }
-    .chips{display:flex; flex-wrap:wrap; gap:10px; margin: 16px 0 18px}
+    .miniDots{display:flex; gap:6px;}
+    .dot{width:9px; height:9px; border-radius:99px; background: rgba(255,255,255,.18);}
+    html[data-theme="light"] .dot{background: rgba(10,20,40,.18);}
+    .previewBody{padding: 0 14px 14px;}
+    .shotGrid{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    @media (max-width: 480px){ .shotGrid{grid-template-columns:1fr;} }
+    .shot{
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.04);
+      overflow:hidden;
+      position:relative;
+      aspect-ratio: 16 / 10;
+      display:grid; place-items:center;
+      color: var(--muted2);
+      font-weight: 700;
+      letter-spacing:.2px;
+    }
+    html[data-theme="light"] .shot{border-color: rgba(10,20,40,.10); background: rgba(10,20,40,.04);}
+    .shot img{width:100%; height:100%; object-fit:cover; display:block;}
+    .shot .tag{
+      position:absolute; left:10px; top:10px;
+      font-size: 12px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(0,0,0,.35);
+      border:1px solid rgba(255,255,255,.12);
+      backdrop-filter: blur(10px);
+      color: #fff;
+    }
+    html[data-theme="light"] .shot .tag{background: rgba(255,255,255,.70); color: var(--text); border-color: rgba(10,20,40,.10);}
+
+    /* Sections layout */
+    .section{padding: 34px 0;}
+    .secTitle{
+      display:flex; align-items:flex-end; justify-content:space-between; gap:14px;
+      margin-bottom: 14px;
+    }
+    .secTitle h2{margin:0; font-size: 28px; letter-spacing: -.5px;}
+    .secTitle p{margin:0; color: var(--muted); max-width: 70ch}
+
+    .grid3{display:grid; grid-template-columns: repeat(3, 1fr); gap: 12px;}
+    @media (max-width: 980px){ .grid3{grid-template-columns:1fr;} }
+
+    .card{
+      border-radius: var(--radius);
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.04);
+      padding: 16px;
+      box-shadow: var(--shadow2);
+    }
+    html[data-theme="light"] .card{border-color: rgba(10,20,40,.10); background: rgba(10,20,40,.04);}
+    .card h3{margin: 0 0 6px; font-size: 16px;}
+    .card p{margin:0; color: var(--muted); font-size: 14px;}
+    .ico{
+      width:36px; height:36px; border-radius: 14px;
+      background: linear-gradient(135deg, rgba(79,125,255,.35), rgba(43,210,255,.22));
+      border:1px solid rgba(255,255,255,.12);
+      display:grid; place-items:center;
+      margin-bottom: 10px;
+    }
+
+    /* Cases */
+    .casesGrid{
+      display:grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+    @media (max-width: 980px){ .casesGrid{grid-template-columns:1fr;} }
+    .case{
+      padding: 14px;
+      border-radius: var(--radius2);
+      border:1px solid rgba(255,255,255,.10);
+      background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.03));
+      box-shadow: var(--shadow2);
+      overflow:hidden;
+    }
+    html[data-theme="light"] .case{border-color: rgba(10,20,40,.10);}
+    .caseTop{display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom: 10px;}
+    .chips{display:flex; flex-wrap:wrap; gap:8px;}
     .chip{
-      display:inline-flex; align-items:center; gap:10px;
-      padding: 10px 12px;
+      font-size: 12px;
+      padding: 6px 10px;
       border-radius: 999px;
-      border:1px solid var(--stroke2);
-      background: rgba(255,255,255,.04);
+      background: rgba(255,255,255,.05);
+      border:1px solid rgba(255,255,255,.10);
+      color: var(--muted);
+      font-weight: 650;
+    }
+    html[data-theme="light"] .chip{background: rgba(10,20,40,.04); border-color: rgba(10,20,40,.10);}
+    .case h3{margin: 0 0 6px; font-size: 18px;}
+    .case p{margin: 0 0 12px; color: var(--muted);}
+
+    .caseShot{
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.03);
+      overflow:hidden;
+      aspect-ratio: 16 / 9;
+      display:grid; place-items:center;
+      color: var(--muted2);
+      font-weight: 800;
+      letter-spacing:.2px;
+    }
+    html[data-theme="light"] .caseShot{border-color: rgba(10,20,40,.10); background: rgba(10,20,40,.03);}
+    .caseShot img{width:100%; height:100%; object-fit:cover; display:block;}
+
+    .caseActions{display:flex; gap:10px; flex-wrap:wrap; margin-top: 12px;}
+    .linkBtn{
+      padding: 10px 12px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.05);
+      color: var(--text);
+      font-weight: 750;
+      cursor:pointer;
+      display:inline-flex; align-items:center; gap:8px;
+    }
+    .linkBtn:hover{background: rgba(255,255,255,.07); border-color: rgba(255,255,255,.16);}
+    html[data-theme="light"] .linkBtn{border-color: rgba(10,20,40,.10); background: rgba(10,20,40,.04);}
+    html[data-theme="light"] .linkBtn:hover{background: rgba(10,20,40,.06); border-color: rgba(10,20,40,.16);}
+
+    /* Demo builder */
+    .demoWrap{display:grid; grid-template-columns: 1fr 1fr; gap: 12px; align-items:start;}
+    @media (max-width: 980px){ .demoWrap{grid-template-columns:1fr;} }
+
+    .selectRow{display:grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 10px;}
+    @media (max-width: 680px){ .selectRow{grid-template-columns:1fr;} }
+    select{
+      width:100%;
+      padding: 12px 12px;
+      border-radius: 14px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.05);
+      color: var(--text);
+      outline:none;
+    }
+    html[data-theme="light"] select{border-color: rgba(10,20,40,.12); background: rgba(10,20,40,.04);}
+
+    .result{
+      padding: 16px;
+      border-radius: var(--radius2);
+      border:1px solid rgba(255,255,255,.10);
+      background: radial-gradient(700px 380px at 30% 10%, rgba(79,125,255,.22), transparent 55%),
+                  radial-gradient(700px 380px at 75% 20%, rgba(43,210,255,.16), transparent 58%),
+                  rgba(255,255,255,.04);
+      box-shadow: var(--shadow2);
+    }
+    html[data-theme="light"] .result{border-color: rgba(10,20,40,.10);}
+    .result h3{margin: 0 0 8px;}
+    .result p{margin:0 0 10px; color: var(--muted);}
+
+    .mock{
+      margin-top: 12px;
+      border-radius: 18px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.14);
+      overflow:hidden;
+    }
+    html[data-theme="light"] .mock{background: rgba(255,255,255,.65); border-color: rgba(10,20,40,.10);}
+    .mockHeader{
+      padding: 10px 12px;
+      display:flex; align-items:center; justify-content:space-between;
+      border-bottom: 1px solid rgba(255,255,255,.08);
       color: var(--muted);
       font-weight: 700;
       font-size: 13px;
     }
-    .chip i{
-      width:22px;height:22px;border-radius:999px;
-      display:grid;place-items:center;
-      background: rgba(55,230,160,.14);
-      border:1px solid rgba(55,230,160,.25);
-      color: var(--good);
-      font-style: normal;
-      font-weight: 900;
-    }
-
-    .ctaRow{display:flex; flex-wrap:wrap; gap:10px; margin-top: 12px}
-    .statRow{
-      margin-top: 16px;
-      display:grid; gap:10px;
-      grid-template-columns: repeat(3, 1fr);
-    }
-    @media (max-width: 900px){ .statRow{grid-template-columns:1fr} }
-    .stat{
-      padding: 16px;
-      border-radius: 18px;
-      border:1px solid var(--stroke);
-      background: rgba(255,255,255,.03);
-    }
-    .stat b{font-size: 26px}
-    .stat p{margin:6px 0 0; color:var(--muted); font-size:13px}
-
-    /* Right side hero: "product shot" */
-    .shot{
-      border-radius: 30px;
-      padding: 18px;
-      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
-      border:1px solid var(--stroke);
-      box-shadow: var(--shadow);
-    }
-    .shotTop{
-      display:flex; align-items:center; justify-content:space-between; gap:10px;
-      margin-bottom: 12px;
-    }
-    .meMini{
-      display:flex; align-items:center; gap:12px;
-      padding:10px 12px;
-      border-radius: 18px;
-      border:1px solid var(--stroke);
-      background: rgba(255,255,255,.03);
-      max-width: 100%;
-    }
-    .meMini .ava{
-      width:44px;height:44px;border-radius: 16px;
-      overflow:hidden;
-      border:1px solid var(--stroke2);
-      background: linear-gradient(135deg, rgba(106,92,255,.25), rgba(41,211,255,.16));
-      display:grid; place-items:center;
-      flex:0 0 auto;
-    }
-    .meMini .ava img{width:100%;height:100%;object-fit:cover}
-    .meMini .ava span{font-weight:900;color:var(--text)}
-    .meMini .meta{line-height:1.15}
-    .meMini .meta b{display:block}
-    .meMini .meta small{display:block;color:var(--muted2)}
-
-    .shotBody{
-      border-radius: 22px;
-      border:1px solid var(--stroke);
-      background:
-        radial-gradient(520px 280px at 10% 20%, rgba(106,92,255,.16), transparent 60%),
-        radial-gradient(520px 280px at 90% 50%, rgba(41,211,255,.12), transparent 60%),
-        linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
-      padding: 14px;
-      min-height: 330px;
-      display:flex;
-      flex-direction:column;
-      gap:12px;
-    }
-    .miniCard{
-      border-radius: 18px;
-      border:1px solid var(--stroke);
-      background: rgba(0,0,0,.18);
-      padding: 12px;
-    }
-    html[data-theme="light"] .miniCard{background: rgba(10,16,32,.03)}
-    .miniGrid{display:grid; grid-template-columns:1fr 1fr; gap:10px}
-    .miniGrid .miniCard{min-height: 110px}
+    html[data-theme="light"] .mockHeader{border-bottom-color: rgba(10,20,40,.08);}
+    .mockBody{padding: 12px;}
+    table{width:100%; border-collapse: collapse; font-size: 13px;}
+    td,th{padding:8px 8px; border-bottom: 1px solid rgba(255,255,255,.08); color: var(--muted);}
+    th{color: var(--text); text-align:left;}
+    html[data-theme="light"] td, html[data-theme="light"] th{border-bottom-color: rgba(10,20,40,.08);}
     .bar{
-      height:10px;border-radius:999px;
-      background: rgba(255,255,255,.06);
-      border:1px solid var(--stroke);
+      height: 10px; border-radius: 99px;
+      background: rgba(255,255,255,.10);
       overflow:hidden;
     }
-    .bar > div{
-      height:100%;
-      width:62%;
-      background: linear-gradient(135deg, var(--accent1), var(--accent2));
-      border-radius:999px;
-    }
-    .kpiRow{display:flex; gap:10px; flex-wrap:wrap}
-    .kpi{
-      padding:10px 12px;
-      border-radius: 14px;
-      border:1px solid var(--stroke);
-      background: rgba(255,255,255,.03);
-      font-weight:800;
-      color: var(--muted);
-      font-size:13px;
-    }
-
-    /* =========================
-       SECTIONS COMMON
-    ========================== */
-    .sectionTitle{
-      display:flex; align-items:end; justify-content:space-between; gap:18px;
-      margin-bottom: 18px;
-    }
-    .sectionTitle h2{
-      margin:0;
-      font-size: 26px;
-      letter-spacing: -.2px;
-    }
-    .sectionTitle p{margin:0; color:var(--muted); max-width: 70ch}
-
-    .grid{
-      display:grid;
-      grid-template-columns: repeat(12, 1fr);
-      gap:12px;
-    }
-    .card{
-      border-radius: var(--radius);
-      border:1px solid var(--stroke);
-      background: rgba(255,255,255,.03);
-      box-shadow: 0 14px 50px rgba(0,0,0,.24);
-      padding: 16px;
-      overflow:hidden;
-    }
-    html[data-theme="light"] .card{
-      box-shadow: 0 14px 50px rgba(10,20,60,.12);
-    }
-
-    /* Services cards */
-    .svc{grid-column: span 4}
-    @media (max-width: 980px){ .svc{grid-column: span 12} }
-    .svc h3{margin:0 0 8px}
-    .svc p{margin:0; color:var(--muted); line-height:1.6}
-    .svc .tag{margin-top:12px; color:var(--muted2); font-weight:700; font-size:12px}
-
-    /* Cases cards w/ images */
-    .case{grid-column: span 6; padding:0}
-    @media (max-width: 980px){ .case{grid-column: span 12} }
-    .case .img{
-      height: 220px;
-      background: linear-gradient(135deg, rgba(106,92,255,.14), rgba(41,211,255,.10));
-      border-bottom:1px solid var(--stroke);
-      display:grid; place-items:center;
-      overflow:hidden;
-      position:relative;
-    }
-    .case .img img{
-      width: 92%;
-      max-width: 520px;
-      border-radius: 16px;
-      border: 1px solid var(--stroke2);
-      box-shadow: 0 18px 60px rgba(0,0,0,.35);
-      background: rgba(255,255,255,.06);
-    }
-    .case .body{padding:16px}
-    .case .body h3{margin:0 0 6px}
-    .case .body p{margin:0 0 10px; color:var(--muted); line-height:1.6}
-    .case .meta{display:flex; flex-wrap:wrap; gap:8px}
-    .badge{
-      font-size:12px;
-      font-weight:800;
-      color: var(--muted);
-      padding:8px 10px;
-      border-radius: 999px;
-      border:1px solid var(--stroke2);
-      background: rgba(255,255,255,.03);
-    }
-
-    /* DEMO game */
-    .demoWrap{
-      display:grid;
-      grid-template-columns: 1.1fr .9fr;
-      gap: 12px;
-    }
-    @media (max-width: 980px){ .demoWrap{grid-template-columns:1fr} }
-    .pickerRow{display:flex; flex-wrap:wrap; gap:8px}
-    .pick{
-      border:1px solid var(--stroke2);
-      background: rgba(255,255,255,.03);
-      color: var(--muted);
-      font-weight: 800;
-      font-size: 13px;
-      padding: 10px 12px;
-      border-radius: 999px;
-      cursor:pointer;
-      transition:.15s ease;
-    }
-    .pick:hover{transform: translateY(-1px); color:var(--text)}
-    .pick.active{
-      color: var(--text);
-      border-color: rgba(41,211,255,.36);
-      background: linear-gradient(135deg, rgba(106,92,255,.14), rgba(41,211,255,.10));
-    }
-    .demoOut h3{margin:0 0 10px}
-    .demoRecipe{
-      border-radius: 16px;
-      border:1px solid var(--stroke);
-      background: rgba(255,255,255,.03);
-      padding: 12px;
-      color: var(--muted);
-      line-height:1.55;
-    }
-    .mockDash{
-      border-radius: 18px;
-      border:1px solid var(--stroke);
-      background: rgba(255,255,255,.02);
-      padding: 12px;
-    }
-    table{
-      width:100%;
-      border-collapse: collapse;
-      font-size: 13px;
-      color: var(--muted);
-    }
-    th,td{
-      padding: 10px 10px;
-      border-bottom:1px solid var(--stroke);
-      text-align:left;
-    }
-    th{color:var(--muted2); font-weight:900}
-    .miniNote{margin:10px 0 0; color:var(--muted2); font-size:12px}
-
-    /* Contact */
-    .contactGrid{
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap:12px;
-    }
-    @media (max-width: 980px){ .contactGrid{grid-template-columns:1fr} }
-    .contactCard h3{margin:0 0 10px}
-    .contactCard p{margin:0 0 12px; color:var(--muted); line-height:1.6}
-    .contactRow{display:flex; gap:10px; flex-wrap:wrap}
+    .bar > i{display:block; height:100%; width: 62%; background: linear-gradient(90deg, var(--accent), var(--accent2)); border-radius:99px;}
 
     /* Footer */
-    footer{
-      padding: 26px 0 40px;
-      color: var(--muted2);
-      border-top: 1px solid var(--stroke);
-      background: rgba(255,255,255,.02);
-    }
-    .foot{
-      display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap;
-      font-size: 13px;
-    }
+    footer{padding: 34px 0 44px; color: var(--muted2);}
+    .footerGrid{display:grid; grid-template-columns: 1.2fr .8fr; gap: 12px;}
+    @media (max-width: 980px){ .footerGrid{grid-template-columns:1fr;} }
+    .copyRow{display:flex; gap:10px; flex-wrap:wrap; margin-top: 10px;}
+
+    /* Small helpers */
+    .small{font-size:12px; color: var(--muted2);}
+    .sr{position:absolute; left:-9999px;}
   </style>
 </head>
 
 <body>
   <!-- =========================
-       GLOBAL NAV / HEADER (ALWAYS VISIBLE)
+       HEADER
   ========================== -->
-  <div class="nav">
-    <div class="wrap navin">
-      <!-- Logo (click = Home) + hover signature -->
-      <a class="brandLink" href="#home" aria-label="Go to Home">
-        <div class="brandBadge" title="Home">
-          <!-- Optional avatar swap on hover -->
-          <img src="assets/images/avatar/alexis.jpg" alt="Alexis avatar" onerror="this.style.display='none'" />
-          <!-- Inline logo SVG (no text) -->
-          <svg class="logoSvg" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <header class="header">
+    <div class="wrap header-inner">
+      <a class="brand" href="#top" aria-label="Back to top">
+        <span class="logoWrap" aria-hidden="true">
+          <!-- Inline SVG logo (diamond) – без окремих файлів -->
+          <svg class="logo" viewBox="0 0 24 24" fill="none">
+            <path d="M12 2.5 21.5 12 12 21.5 2.5 12 12 2.5Z" fill="rgba(255,255,255,.85)"/>
+            <path d="M12 5.7 18.3 12 12 18.3 5.7 12 12 5.7Z" fill="url(#g)"/>
             <defs>
-              <linearGradient id="g1" x1="10" y1="8" x2="54" y2="56" gradientUnits="userSpaceOnUse">
-                <stop stop-color="#6A5CFF"/>
-                <stop offset="1" stop-color="#29D3FF"/>
-              </linearGradient>
-              <linearGradient id="g2" x1="18" y1="16" x2="50" y2="50" gradientUnits="userSpaceOnUse">
-                <stop stop-color="#0B1020" stop-opacity=".0"/>
-                <stop offset="1" stop-color="#0B1020" stop-opacity=".35"/>
+              <linearGradient id="g" x1="6" y1="6" x2="19" y2="19" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#4F7DFF"/>
+                <stop offset="1" stop-color="#2BD2FF"/>
               </linearGradient>
             </defs>
-            <!-- diamond -->
-            <path d="M32 6 58 32 32 58 6 32 32 6Z" fill="url(#g1)" opacity=".95"/>
-            <!-- inner cut -->
-            <path d="M32 18 46 32 32 46 18 32 32 18Z" fill="rgba(255,255,255,.95)"/>
-            <!-- subtle shade -->
-            <path d="M32 6 58 32 32 58V6Z" fill="url(#g2)"/>
           </svg>
-        </div>
-
-        <div class="brandText">
-          <div class="brandName">Alexis Data Systems</div>
-          <div class="brandSub">Excel &amp; Google Sheets Automation</div>
-        </div>
+        </span>
+        <span class="brandText">
+          <b>Alexis Data Systems</b>
+          <span>Excel & Google Sheets Automation</span>
+        </span>
       </a>
 
-      <!-- Main nav -->
-      <div class="navlinks" id="navLinks">
-        <a href="#about">About</a>
-        <a href="#services">Services</a>
-        <a href="#cases">Cases</a>
-        <a href="#demo">Demo</a>
-        <a href="#contact">Contact</a>
-      </div>
+      <nav class="nav" aria-label="Primary">
+        <a href="#about" data-nav="about">About</a>
+        <a href="#services" data-nav="services">Services</a>
+        <a href="#cases" data-nav="cases">Cases</a>
+        <a href="#demo" data-nav="demo">Demo</a>
+        <a href="#contact" data-nav="contact">Contact</a>
+      </nav>
 
-      <div class="navright">
-        <!-- Theme toggle (works everywhere) -->
-        <button class="btn iconbtn" id="themeToggle" aria-label="Toggle theme" title="Toggle theme">
+      <div class="hdrRight">
+        <!-- Avatar badge -->
+        <div class="avatarCard" title="Alexis — hover to expand">
+          <div class="avatar" aria-hidden="true">
+            <!-- Put your file here: assets/images/avatar/alexis.jpg -->
+            <img src="assets/images/avatar/alexis.jpg" alt="" onerror="this.remove(); this.parentNode.querySelector('.avatarFallback').style.display='grid';" />
+            <div class="avatarFallback" style="display:none; width:100%; height:100%; place-items:center;">OS</div>
+          </div>
+          <div class="avatarMeta">
+            <b>Olexandr</b>
+            <span>Dashboards • Automation • Tracking</span>
+          </div>
+        </div>
+
+        <!-- Theme toggle -->
+        <button class="iconBtn" id="themeBtn" aria-label="Toggle theme" title="Theme">
           <span id="themeIcon" aria-hidden="true">🌙</span>
+          <span class="sr">Toggle theme</span>
         </button>
-        <a class="btn primary" href="https://www.fiverr.com/Alex_E" target="_blank" rel="noopener">Hire on Fiverr</a>
+
+        <!-- Fiverr CTA -->
+        <a class="cta" href="#contact" title="Hire on Fiverr / Contact">
+          Hire on Fiverr
+        </a>
       </div>
     </div>
-  </div>
+  </header>
 
-  <main>
-    <!-- =========================
-         HOME / HERO
-    ========================== -->
-    <section id="home" class="hero">
-      <div class="wrap heroGrid">
-        <div class="heroCard">
-          <div class="pill">Systems, not spreadsheets • Excel &amp; Automation</div>
-          <div class="h1">Clean business systems<br/>built on Excel &amp; Google Sheets.</div>
+  <!-- =========================
+       HERO
+  ========================== -->
+  <div id="top"></div>
+
+  <section class="hero">
+    <div class="wrap heroGrid">
+      <div class="panel">
+        <div class="heroLeft">
+          <div class="pill">Systems, not spreadsheets • Excel & Automation</div>
+          <h1>Clean business systems built on Excel & Google Sheets.</h1>
           <p class="lead">
-            I turn chaotic spreadsheets into structured, automated workflows that save time, eliminate errors,
-            and give you full control.
+            Я перетворюю хаотичні таблиці на структуровані системи: дашборди, автоматизація, облік і форми —
+            без зайвого “ручняка”, помилок і плутанини.
           </p>
 
-          <div class="chips">
-            <span class="chip"><i>✓</i> No more manual reports</span>
-            <span class="chip"><i>✓</i> No more spreadsheet chaos</span>
-            <span class="chip"><i>✓</i> No more costly mistakes</span>
+          <div class="badges">
+            <div class="badge"><span class="tick">✓</span> No more manual reports</div>
+            <div class="badge"><span class="tick">✓</span> No more spreadsheet chaos</div>
+            <div class="badge"><span class="tick">✓</span> No more costly mistakes</div>
           </div>
 
-          <div class="ctaRow">
-            <a class="btn primary" href="#contact">Get your system built</a>
+          <div class="heroBtns">
+            <a class="cta" href="#contact">Get your system built</a>
             <a class="btn" href="#cases">See cases</a>
-            <a class="btn" href="mailto:mr.schljakhta@gmail.com?subject=Project%20inquiry%20(Alexis%20Data%20Systems)">Email me</a>
-          </div>
-
-          <div class="statRow">
-            <div class="stat">
-              <b>Excel-first</b>
-              <p>Dashboards, templates, models, clean data structure</p>
-            </div>
-            <div class="stat">
-              <b>Automation</b>
-              <p>VBA, Power Query, Google Apps Script workflows</p>
-            </div>
-            <div class="stat">
-              <b>Control</b>
-              <p>Reliable tracking systems &amp; team-friendly UX</p>
-            </div>
+            <a class="btn" href="mailto:mr.schljakhta@gmail.com?subject=Project%20Request%20(Alexis%20Data%20Systems)">Email me</a>
           </div>
         </div>
 
-        <!-- Product shot / right card -->
-        <div class="shot">
-          <div class="shotTop">
-            <div class="meMini">
-              <div class="ava">
-                <img src="assets/images/avatar/alexis.jpg" alt="Alexis avatar" onerror="this.outerHTML='<span>OS</span>'">
-              </div>
-              <div class="meta">
-                <b>Olexandr</b>
-                <small>Excel &amp; Systems Builder</small>
-              </div>
-            </div>
-            <div class="kpiRow">
-              <span class="kpi">Fast delivery</span>
-              <span class="kpi">Clean UX</span>
-              <span class="kpi">No chaos</span>
-            </div>
+        <div class="stats">
+          <div class="stat">
+            <b>20+ yrs</b>
+            <span>Excel learning & modeling</span>
           </div>
-
-          <div class="shotBody" aria-label="Mini dashboard preview">
-            <div class="miniCard">
-              <b style="display:block;margin-bottom:8px;">Finance Snapshot</b>
-              <div class="bar"><div></div></div>
-              <div class="miniNote">Cashflow health — automated summary</div>
-            </div>
-
-            <div class="miniGrid">
-              <div class="miniCard">
-                <b style="display:block;margin-bottom:6px;">Errors</b>
-                <div style="font-weight:900;font-size:26px;">↓ 64%</div>
-                <div class="miniNote">Validation + structured input</div>
-              </div>
-              <div class="miniCard">
-                <b style="display:block;margin-bottom:6px;">Time saved</b>
-                <div style="font-weight:900;font-size:26px;">+5h/week</div>
-                <div class="miniNote">Automation &amp; one-click reports</div>
-              </div>
-            </div>
-
-            <div class="miniCard">
-              <b style="display:block;margin-bottom:8px;">Workflow</b>
-              <div class="miniNote">Chaos → System → Automation → Control</div>
-            </div>
+          <div class="stat">
+            <b>Automation</b>
+            <span>VBA + structured workflows</span>
+          </div>
+          <div class="stat">
+            <b>Control</b>
+            <span>Reliable dashboards & tracking</span>
           </div>
         </div>
       </div>
-    </section>
 
-    <!-- =========================
-         ABOUT
-    ========================== -->
-    <section id="about">
-      <div class="wrap">
-        <div class="sectionTitle">
-          <div>
-            <h2>About</h2>
-            <p>I build practical systems for small businesses and teams: cashflow dashboards, onboarding forms, expense tracking, KPI systems — clean, maintainable, and automation-ready.</p>
+      <div class="panel heroRight">
+        <div class="preview">
+          <div class="previewTop">
+            <div class="miniDots" aria-hidden="true">
+              <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+            </div>
+            <div class="small">Showcase previews</div>
+          </div>
+
+          <div class="previewBody">
+            <div class="shotGrid">
+              <!-- Якщо зображення ще не залиті — побачиш красивий placeholder -->
+              <div class="shot">
+                <span class="tag">Finance dashboard</span>
+                <img src="assets/images/case-1-dashboard.png" alt="Finance dashboard preview"
+                     onerror="this.remove(); this.parentNode.append('Add case-1-dashboard.png');" />
+              </div>
+              <div class="shot">
+                <span class="tag">HR onboarding</span>
+                <img src="assets/images/case-2-form.png" alt="HR form preview"
+                     onerror="this.remove(); this.parentNode.append('Add case-2-form.png');" />
+              </div>
+              <div class="shot">
+                <span class="tag">Expense tracker</span>
+                <img src="assets/images/case-3-tracker.png" alt="Expense tracker preview"
+                     onerror="this.remove(); this.parentNode.append('Add case-3-tracker.png');" />
+              </div>
+              <div class="shot">
+                <span class="tag">Sheets KPI system</span>
+                <img src="assets/images/case-4-gsheets.png" alt="Google Sheets KPI preview"
+                     onerror="this.remove(); this.parentNode.append('Add case-4-gsheets.png');" />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="small" style="padding:10px 8px 0; opacity:.9;">
+          Tip: завантаж скріни в <code>assets/images/</code> з іменами <code>case-1-dashboard.png</code>… і вітрина одразу оживе.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================
+       ABOUT
+  ========================== -->
+  <section class="section" id="about">
+    <div class="wrap">
+      <div class="secTitle">
+        <div>
+          <h2>About</h2>
+          <p>Моя спеціалізація — робити з таблиць <b>системи</b>: зрозумілі, підтримувані, масштабовані.</p>
+        </div>
+      </div>
+
+      <div class="grid3">
+        <div class="card">
+          <div class="ico">🧩</div>
+          <h3>System thinking</h3>
+          <p>Структура → правила → контроль. Таблиця перестає “ламатися” від дрібних змін.</p>
+        </div>
+        <div class="card">
+          <div class="ico">⚙️</div>
+          <h3>Automation</h3>
+          <p>VBA / Apps Script / формули — знімаю рутину і мінімізую людський фактор.</p>
+        </div>
+        <div class="card">
+          <div class="ico">📈</div>
+          <h3>Dashboards</h3>
+          <p>Показники, фільтри, зрозумілі візуалізації — керування, а не “звіт заради звіту”.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================
+       SERVICES
+  ========================== -->
+  <section class="section" id="services">
+    <div class="wrap">
+      <div class="secTitle">
+        <div>
+          <h2>Services</h2>
+          <p>Найчастіші запити, які я закриваю “під ключ”.</p>
+        </div>
+      </div>
+
+      <div class="grid3">
+        <div class="card">
+          <div class="ico">💸</div>
+          <h3>Finance dashboard (cashflow)</h3>
+          <p>Надходження/витрати, категорії, періоди, план-факт, звіти одним кліком.</p>
+        </div>
+        <div class="card">
+          <div class="ico">👥</div>
+          <h3>HR onboarding form</h3>
+          <p>Форма збору даних + валідатори + база + автоматичні документи/листування.</p>
+        </div>
+        <div class="card">
+          <div class="ico">🧾</div>
+          <h3>Business expense tracker</h3>
+          <p>Облік витрат, аналітика, дедлайни, чеки/категорії, контроль бюджету.</p>
+        </div>
+        <div class="card">
+          <div class="ico">📊</div>
+          <h3>Google Sheets KPI system</h3>
+          <p>KPI, дашборд команди, ролі/доступи, автозвіти, нагадування, історія змін.</p>
+        </div>
+        <div class="card">
+          <div class="ico">🧠</div>
+          <h3>Cleanup & refactor</h3>
+          <p>Приводжу існуючі файли до ладу: структура, назви, захист, документація.</p>
+        </div>
+        <div class="card">
+          <div class="ico">🔒</div>
+          <h3>Reliability & control</h3>
+          <p>Валідації, логування, контроль помилок, щоб система працювала “в бойових умовах”.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================
+       CASES
+  ========================== -->
+  <section class="section" id="cases">
+    <div class="wrap">
+      <div class="secTitle">
+        <div>
+          <h2>Cases</h2>
+          <p>Вітрина кейсів. Пізніше додамо 1-сторінкові PDF (one-pager), але скріни вже дають “вау”.</p>
+        </div>
+      </div>
+
+      <div class="casesGrid">
+        <div class="case">
+          <div class="caseTop">
+            <div class="chips">
+              <span class="chip">Finance</span><span class="chip">Dashboard</span><span class="chip">VBA</span>
+            </div>
+            <span class="small">Case #1</span>
+          </div>
+          <h3>Finance dashboard (cashflow)</h3>
+          <p>Від “ручних звітів” до системи: контроль бюджету, категорії, план-факт, швидкі зрізи.</p>
+
+          <div class="caseShot">
+            <img src="assets/images/case-1-dashboard.png" alt="Case 1 screenshot"
+                 onerror="this.remove(); this.parentNode.append('Add case-1-dashboard.png');" />
+          </div>
+
+          <div class="caseActions">
+            <a class="linkBtn" href="#demo">▶ Try demo</a>
+            <a class="linkBtn" href="#" onclick="alert('Додамо PDF пізніше: assets/pdfs/case-1-onepager.pdf'); return false;">📄 One-pager</a>
           </div>
         </div>
 
-        <div class="grid">
-          <div class="card svc">
-            <h3>Structure first</h3>
-            <p>Clear tables, stable identifiers, validated inputs — so the file doesn’t break when people use it.</p>
-            <div class="tag">Best for: teams &amp; long-term tracking</div>
+        <div class="case">
+          <div class="caseTop">
+            <div class="chips">
+              <span class="chip">HR</span><span class="chip">Form</span><span class="chip">Automation</span>
+            </div>
+            <span class="small">Case #2</span>
           </div>
-          <div class="card svc">
-            <h3>Automation</h3>
-            <p>VBA / Power Query / Apps Script to remove repetitive work and generate reports in one click.</p>
-            <div class="tag">Best for: reporting &amp; recurring workflows</div>
+          <h3>HR onboarding form</h3>
+          <p>Єдина форма збору даних → база → авто-перевірки → готові документи та трекінг статусів.</p>
+
+          <div class="caseShot">
+            <img src="assets/images/case-2-form.png" alt="Case 2 screenshot"
+                 onerror="this.remove(); this.parentNode.append('Add case-2-form.png');" />
           </div>
-          <div class="card svc">
-            <h3>Nice UX</h3>
-            <p>Simple buttons, clean layouts, dashboards that look premium — even inside spreadsheets.</p>
-            <div class="tag">Best for: client-facing deliverables</div>
+
+          <div class="caseActions">
+            <a class="linkBtn" href="mailto:mr.schljakhta@gmail.com?subject=HR%20Onboarding%20System%20Request">✉ Email</a>
+            <a class="linkBtn" href="#" onclick="alert('Додамо PDF пізніше: assets/pdfs/case-2-onepager.pdf'); return false;">📄 One-pager</a>
+          </div>
+        </div>
+
+        <div class="case">
+          <div class="caseTop">
+            <div class="chips">
+              <span class="chip">Expenses</span><span class="chip">Tracking</span><span class="chip">Control</span>
+            </div>
+            <span class="small">Case #3</span>
+          </div>
+          <h3>Business expense tracker</h3>
+          <p>Витрати, ліміти, категорії, чеки, звіти, анти-помилки. Мінімум ручної роботи.</p>
+
+          <div class="caseShot">
+            <img src="assets/images/case-3-tracker.png" alt="Case 3 screenshot"
+                 onerror="this.remove(); this.parentNode.append('Add case-3-tracker.png');" />
+          </div>
+
+          <div class="caseActions">
+            <a class="linkBtn" href="#contact">Request similar</a>
+          </div>
+        </div>
+
+        <div class="case">
+          <div class="caseTop">
+            <div class="chips">
+              <span class="chip">Google Sheets</span><span class="chip">KPI</span><span class="chip">Team</span>
+            </div>
+            <span class="small">Case #4</span>
+          </div>
+          <h3>Google Sheets KPI system</h3>
+          <p>KPI, ролі, дашборд команди, автоматичні звіти і контроль якості даних.</p>
+
+          <div class="caseShot">
+            <img src="assets/images/case-4-gsheets.png" alt="Case 4 screenshot"
+                 onerror="this.remove(); this.parentNode.append('Add case-4-gsheets.png');" />
+          </div>
+
+          <div class="caseActions">
+            <a class="linkBtn" href="#demo">▶ Try demo</a>
           </div>
         </div>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <!-- =========================
-         SERVICES
-    ========================== -->
-    <section id="services">
-      <div class="wrap">
-        <div class="sectionTitle">
-          <div>
-            <h2>Services</h2>
-            <p>Pick a package or combine them. Everything is built to be easy to maintain and easy to hand over.</p>
-          </div>
-        </div>
-
-        <div class="grid">
-          <div class="card svc">
-            <h3>Finance dashboards</h3>
-            <p>Cashflow, profit &amp; loss, budgets, category tracking, KPI tiles, and summary reports.</p>
-            <div class="tag">Excel / Google Sheets</div>
-          </div>
-          <div class="card svc">
-            <h3>HR onboarding</h3>
-            <p>Forms, data storage, document checklists, employee registry, and clean search UI.</p>
-            <div class="tag">Forms + validation</div>
-          </div>
-          <div class="card svc">
-            <h3>Expense tracking</h3>
-            <p>Company spending, receipts, categories, projects, approvals, export-ready reports.</p>
-            <div class="tag">Control &amp; transparency</div>
-          </div>
+  <!-- =========================
+       DEMO (MINI GAME)
+  ========================== -->
+  <section class="section" id="demo">
+    <div class="wrap">
+      <div class="secTitle">
+        <div>
+          <h2>Demo</h2>
+          <p>Міні-гра: обери “хаос → система → автоматизація” і подивись, який результат виходить.</p>
         </div>
       </div>
-    </section>
 
-    <!-- =========================
-         CASES (with images)
-    ========================== -->
-    <section id="cases">
-      <div class="wrap">
-        <div class="sectionTitle">
-          <div>
-            <h2>Cases</h2>
-            <p>These are your 4 направления. Just upload the screenshots to <b>assets/images/</b> with the names below.</p>
-          </div>
-        </div>
+      <div class="demoWrap">
+        <div class="card">
+          <h3 style="margin:0 0 6px;">Build your mini-case</h3>
+          <p style="margin:0; color:var(--muted);">Комбінуй елементи — і я покажу, що саме буде зроблено.</p>
 
-        <div class="grid">
-          <article class="card case">
-            <div class="img">
-              <img src="assets/images/case-1-dashboard.png" alt="Finance dashboard screenshot"
-                   onerror="this.style.display='none'; this.parentElement.innerHTML='<div style=&quot;color:var(--muted);font-weight:800&quot;>Upload: assets/images/case-1-dashboard.png</div>';">
+          <div class="selectRow" role="group" aria-label="Demo builder controls">
+            <div>
+              <label class="small" for="selChaos">Chaos</label>
+              <select id="selChaos">
+                <option value="Manual reports">Manual reports</option>
+                <option value="Spreadsheet mess">Spreadsheet mess</option>
+                <option value="No single source of truth">No single source of truth</option>
+              </select>
             </div>
-            <div class="body">
-              <h3>Finance dashboard (cashflow)</h3>
-              <p>Automated cashflow overview, category breakdown, and clean KPI summary for decisions.</p>
-              <div class="meta">
-                <span class="badge">Dashboard</span>
-                <span class="badge">Automation</span>
-                <span class="badge">Reporting</span>
-              </div>
+
+            <div>
+              <label class="small" for="selSystem">System</label>
+              <select id="selSystem">
+                <option value="Finance dashboard">Finance dashboard</option>
+                <option value="HR onboarding form">HR onboarding form</option>
+                <option value="Expense tracker">Business expense tracker</option>
+                <option value="Sheets KPI system">Google Sheets KPI system</option>
+              </select>
             </div>
-          </article>
 
-          <article class="card case">
-            <div class="img">
-              <img src="assets/images/case-2-form.png" alt="HR onboarding form screenshot"
-                   onerror="this.style.display='none'; this.parentElement.innerHTML='<div style=&quot;color:var(--muted);font-weight:800&quot;>Upload: assets/images/case-2-form.png</div>';">
-            </div>
-            <div class="body">
-              <h3>HR onboarding form</h3>
-              <p>Clean input form, validation, and structured storage so onboarding stays consistent.</p>
-              <div class="meta">
-                <span class="badge">Form UX</span>
-                <span class="badge">Validation</span>
-                <span class="badge">Registry</span>
-              </div>
-            </div>
-          </article>
-
-          <article class="card case">
-            <div class="img">
-              <img src="assets/images/case-3-tracker.png" alt="Expense tracker screenshot"
-                   onerror="this.style.display='none'; this.parentElement.innerHTML='<div style=&quot;color:var(--muted);font-weight:800&quot;>Upload: assets/images/case-3-tracker.png</div>';">
-            </div>
-            <div class="body">
-              <h3>Business expense tracker</h3>
-              <p>Track spending by project/category, attach receipts, and generate reports in minutes.</p>
-              <div class="meta">
-                <span class="badge">Tracking</span>
-                <span class="badge">Receipts</span>
-                <span class="badge">Exports</span>
-              </div>
-            </div>
-          </article>
-
-          <article class="card case">
-            <div class="img">
-              <img src="assets/images/case-4-gsheets.png" alt="Google Sheets KPI system screenshot"
-                   onerror="this.style.display='none'; this.parentElement.innerHTML='<div style=&quot;color:var(--muted);font-weight:800&quot;>Upload: assets/images/case-4-gsheets.png</div>';">
-            </div>
-            <div class="body">
-              <h3>Google Sheets KPI system</h3>
-              <p>Team KPI capture, weekly view, automatic totals, and a clean management dashboard.</p>
-              <div class="meta">
-                <span class="badge">Google Sheets</span>
-                <span class="badge">KPI</span>
-                <span class="badge">Automation</span>
-              </div>
-            </div>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <!-- =========================
-         DEMO / MINI GAME (separate “page”)
-    ========================== -->
-    <section id="demo">
-      <div class="wrap">
-        <div class="sectionTitle">
-          <div>
-            <h2>Demo — build your system</h2>
-            <p>Play with the logic: pick the pain → choose the system → choose automation. You’ll see a mini “dashboard” change live.</p>
-          </div>
-        </div>
-
-        <div class="demoWrap">
-          <div class="card">
-            <h3 style="margin:0 0 10px;">1) Pick the pain</h3>
-            <div class="pickerRow" id="painRow"></div>
-
-            <div class="spacer"></div>
-
-            <h3 style="margin:0 0 10px;">2) Pick the system</h3>
-            <div class="pickerRow" id="sysRow"></div>
-
-            <div class="spacer"></div>
-
-            <h3 style="margin:0 0 10px;">3) Pick automation</h3>
-            <div class="pickerRow" id="autoRow"></div>
-
-            <div class="spacer"></div>
-
-            <div class="ctaRow">
-              <button class="btn primary" id="randomizeBtn">Randomize</button>
-              <a class="btn" href="#contact">Request this system</a>
+            <div>
+              <label class="small" for="selAuto">Automation</label>
+              <select id="selAuto">
+                <option value="VBA">VBA</option>
+                <option value="Google Apps Script">Google Apps Script</option>
+                <option value="Smart formulas + validations">Smart formulas + validations</option>
+              </select>
             </div>
           </div>
 
-          <div class="card demoOut">
-            <h3>Result</h3>
-            <div class="demoRecipe" id="recipe"></div>
+          <div class="copyRow">
+            <button class="btn" id="presetBtn" type="button">Use preset (Manual reports → Finance dashboard → VBA)</button>
+            <button class="btn" id="randomBtn" type="button">Random</button>
+          </div>
+          <div class="small" style="margin-top:10px;">Порада: після вибору — прокрути праворуч і подивись “result”.</div>
+        </div>
 
-            <div class="spacer"></div>
+        <div class="result" aria-live="polite">
+          <h3 id="rTitle">Manual reports → Finance dashboard → VBA</h3>
+          <p id="rDesc">
+            Замість ручних звітів: дашборд cashflow з категоріями, план-факт, фільтрами і кнопками “оновити/експорт”.
+          </p>
+          <div class="chips" id="rChips">
+            <span class="chip">Less chaos</span>
+            <span class="chip">More control</span>
+            <span class="chip">Faster decisions</span>
+          </div>
 
-            <div class="mockDash">
-              <b style="display:block;margin-bottom:10px;">Mini dashboard</b>
+          <div class="mock" role="img" aria-label="Mini dashboard mock">
+            <div class="mockHeader">
+              <span id="mockName">Finance dashboard</span>
+              <span class="small" id="mockAuto">Automation: VBA</span>
+            </div>
+            <div class="mockBody">
               <table>
                 <thead>
-                  <tr><th>Metric</th><th>Value</th><th>Note</th></tr>
+                  <tr><th>Metric</th><th>Value</th><th>Trend</th></tr>
                 </thead>
-                <tbody id="dashBody"></tbody>
+                <tbody>
+                  <tr><td>Revenue</td><td id="mRev">$12,450</td><td><div class="bar"><i style="width:72%"></i></div></td></tr>
+                  <tr><td>Expenses</td><td id="mExp">$7,980</td><td><div class="bar"><i style="width:58%"></i></div></td></tr>
+                  <tr><td>Net</td><td id="mNet">$4,470</td><td><div class="bar"><i style="width:64%"></i></div></td></tr>
+                </tbody>
               </table>
-              <div class="miniNote">This is a tiny interactive preview — the real deliverable is a complete system (dashboard + structure + automation).</div>
+
+              <div class="caseActions" style="margin-top:12px;">
+                <a class="linkBtn" href="#contact">Get this built</a>
+                <a class="linkBtn" href="#cases">See similar cases</a>
+              </div>
             </div>
+          </div>
+
+          <div class="small" style="margin-top:10px;">
+            Цей “демо-конструктор” — саме те, що ти хотів: користувач грається і розуміє логіку продукту.
           </div>
         </div>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <!-- =========================
-         CONTACT
-    ========================== -->
-    <section id="contact">
-      <div class="wrap">
-        <div class="sectionTitle">
-          <div>
-            <h2>Contact</h2>
-            <p>Two direct channels. If you message, tell me: goal, current file status, and what “done” looks like.</p>
+  <!-- =========================
+       CONTACT
+  ========================== -->
+  <section class="section" id="contact">
+    <div class="wrap">
+      <div class="secTitle">
+        <div>
+          <h2>Contact</h2>
+          <p>Напиши коротко: що болить, що є зараз, який результат хочеш. Я відповім з планом і оцінкою.</p>
+        </div>
+      </div>
+
+      <div class="footerGrid">
+        <div class="card">
+          <h3 style="margin:0 0 6px;">Email</h3>
+          <p style="margin:0; color:var(--muted);">Основний канал. Можна одразу з файлами/скрінами.</p>
+
+          <div class="copyRow">
+            <a class="linkBtn" href="mailto:mr.schljakhta@gmail.com?subject=Project%20Request%20(Alexis%20Data%20Systems)">✉ mr.schljakhta@gmail.com</a>
+            <!-- Якщо маєш другий email — заміниш нижче -->
+            <button class="linkBtn" type="button" onclick="copyText('mr.schljakhta@gmail.com')">📋 Copy</button>
+          </div>
+
+          <div class="small" style="margin-top:10px;">
+            Fiverr: додаси свій лінк — я вставлю в кнопку “Hire on Fiverr”.
           </div>
         </div>
 
-        <div class="contactGrid">
-          <div class="card contactCard">
-            <h3>Hire on Fiverr</h3>
-            <p>Best if you want a structured gig flow, clear scope, and delivery milestones.</p>
-            <div class="contactRow">
-              <a class="btn primary" href="https://www.fiverr.com/Alex_E" target="_blank" rel="noopener">Open Fiverr</a>
-              <a class="btn" href="#cases">See cases</a>
-            </div>
-          </div>
+        <div class="card">
+          <h3 style="margin:0 0 6px;">What to include</h3>
+          <p style="margin:0; color:var(--muted);">
+            1) Ніша/процес • 2) Які таблиці є • 3) Ролі/користувачі • 4) Який результат потрібен.
+          </p>
 
-          <div class="card contactCard">
-            <h3>Email</h3>
-            <p>Best for custom systems or long-term collaboration.</p>
-            <div class="contactRow">
-              <a class="btn primary" href="mailto:mr.schljakhta@gmail.com?subject=Project%20inquiry%20(Alexis%20Data%20Systems)">mr.schljakhta@gmail.com</a>
-              <a class="btn" href="mailto:mr.schljakhta@gmail.com?subject=Quick%20question%20(Alexis%20Data%20Systems)">Quick question</a>
-            </div>
+          <div class="caseActions" style="margin-top:12px;">
+            <a class="cta" href="mailto:mr.schljakhta@gmail.com?subject=Quick%20Brief%20(Alexis%20Data%20Systems)">Send brief</a>
           </div>
         </div>
       </div>
-    </section>
-  </main>
+    </div>
+  </section>
 
   <footer>
-    <div class="wrap foot">
-      <div>© <span id="year"></span> Alexis Data Systems</div>
-      <div>Built with a single-file landing. GitHub Pages ready.</div>
+    <div class="wrap">
+      <div class="small">© <span id="y"></span> Alexis Data Systems. Built on GitHub Pages.</div>
     </div>
   </footer>
 
   <script>
-    /* =========================
-       THEME (default dark, persists)
-    ========================== */
-    (function(){
-      const root = document.documentElement;
-      const key = "ads_theme";
-      const toggle = document.getElementById("themeToggle");
-      const icon = document.getElementById("themeIcon");
+    // =========================
+    // THEME (default: dark)
+    // =========================
+    const root = document.documentElement;
+    const themeBtn = document.getElementById('themeBtn');
+    const themeIcon = document.getElementById('themeIcon');
 
-      function apply(theme){
-        root.setAttribute("data-theme", theme);
-        icon.textContent = (theme === "light") ? "☀️" : "🌙";
-        try{ localStorage.setItem(key, theme); }catch(e){}
-      }
+    function setTheme(t){
+      root.setAttribute('data-theme', t);
+      localStorage.setItem('ads_theme', t);
+      themeIcon.textContent = (t === 'dark') ? '🌙' : '☀️';
+    }
+    const saved = localStorage.getItem('ads_theme');
+    setTheme(saved ? saved : 'dark');
 
-      // default dark
-      let saved = null;
-      try{ saved = localStorage.getItem(key); }catch(e){}
-      const initial = (saved === "light" || saved === "dark") ? saved : "dark";
-      apply(initial);
+    themeBtn.addEventListener('click', () => {
+      const cur = root.getAttribute('data-theme');
+      setTheme(cur === 'dark' ? 'light' : 'dark');
+    });
 
-      toggle.addEventListener("click", ()=>{
-        const cur = root.getAttribute("data-theme") || "dark";
-        apply(cur === "dark" ? "light" : "dark");
-      });
-    })();
+    // =========================
+    // NAV ACTIVE (scroll + hash)
+    // =========================
+    const navLinks = [...document.querySelectorAll('.nav a[data-nav]')];
+    const sections = navLinks
+      .map(a => document.getElementById(a.getAttribute('data-nav')))
+      .filter(Boolean);
 
-    /* =========================
-       ACTIVE NAV HIGHLIGHT (scroll / hash)
-    ========================== */
-    (function(){
-      const links = Array.from(document.querySelectorAll("#navLinks a"));
-      const sections = links
-        .map(a => document.querySelector(a.getAttribute("href")))
-        .filter(Boolean);
+    const obs = new IntersectionObserver((entries) => {
+      // pick most visible
+      const visible = entries.filter(e => e.isIntersecting).sort((a,b) => b.intersectionRatio - a.intersectionRatio)[0];
+      if(!visible) return;
+      const id = visible.target.id;
+      navLinks.forEach(a => a.classList.toggle('active', a.getAttribute('data-nav') === id));
+      history.replaceState(null, "", "#" + id);
+    }, { rootMargin: "-45% 0px -50% 0px", threshold: [0.15, 0.25, 0.35, 0.5, 0.75] });
 
-      function setActiveById(id){
-        links.forEach(a => a.classList.toggle("active", a.getAttribute("href") === "#" + id));
-      }
+    sections.forEach(s => obs.observe(s));
 
-      // Hash change -> highlight
-      window.addEventListener("hashchange", ()=>{
-        const id = (location.hash || "#home").replace("#","");
-        setActiveById(id);
-      });
+    // initial active based on hash
+    function setActiveFromHash(){
+      const h = (location.hash || "").replace("#","");
+      navLinks.forEach(a => a.classList.toggle('active', a.getAttribute('data-nav') === h));
+    }
+    window.addEventListener('hashchange', setActiveFromHash);
+    setActiveFromHash();
 
-      // Intersection observer -> highlight on scroll
-      const io = new IntersectionObserver((entries)=>{
-        const visible = entries
-          .filter(e => e.isIntersecting)
-          .sort((a,b)=> b.intersectionRatio - a.intersectionRatio)[0];
-        if(visible){
-          setActiveById(visible.target.id);
-        }
-      }, { root:null, threshold:[0.2,0.35,0.5,0.65] });
+    // =========================
+    // DEMO BUILDER
+    // =========================
+    const selChaos = document.getElementById('selChaos');
+    const selSystem = document.getElementById('selSystem');
+    const selAuto  = document.getElementById('selAuto');
 
-      sections.forEach(s => io.observe(s));
+    const rTitle = document.getElementById('rTitle');
+    const rDesc  = document.getElementById('rDesc');
+    const rChips = document.getElementById('rChips');
+    const mockName = document.getElementById('mockName');
+    const mockAuto = document.getElementById('mockAuto');
 
-      // Initial
-      const startId = (location.hash || "#home").replace("#","");
-      setActiveById(startId);
-    })();
+    function buildDesc(chaos, system, auto){
+      const map = {
+        "Finance dashboard": "Дашборд cashflow з категоріями, план-факт, фільтрами і швидким експортом.",
+        "HR onboarding form": "Форма + база + валідатори + статуси + автоматичні документи/листи.",
+        "Business expense tracker": "Облік витрат, ліміти, чеки, категорії, аналітика і контроль помилок.",
+        "Google Sheets KPI system": "KPI, дашборд команди, ролі/доступи, історія змін, автозвіти."
+      };
+      const autoMap = {
+        "VBA": "Кнопки/макроси, валідації, автозаповнення, експорт, захист.",
+        "Google Apps Script": "Тригери, автозвіти, нотифікації, інтеграції.",
+        "Smart formulas + validations": "Сильна логіка на формулах, перевірки, контроль вводу."
+      };
+      return `Замість “${chaos}”: ${map[system] || "структурована система"} Автоматизація: ${autoMap[auto] || auto}.`;
+    }
 
-    /* =========================
-       DEMO GAME LOGIC
-    ========================== */
-    (function(){
-      const pains = [
-        { id:"manual", label:"Manual reports" },
-        { id:"chaos", label:"Spreadsheet chaos" },
-        { id:"noctrl", label:"No visibility" }
+    function render(){
+      const chaos = selChaos.value;
+      const system = selSystem.value;
+      const auto = selAuto.value;
+
+      rTitle.textContent = `${chaos} → ${system} → ${auto}`;
+      rDesc.textContent  = buildDesc(chaos, system, auto);
+
+      mockName.textContent = system;
+      mockAuto.textContent = `Automation: ${auto}`;
+
+      // chips
+      const chips = [
+        chaos.includes("Manual") ? "1-click reporting" : "Less chaos",
+        system.includes("dashboard") ? "Visual control" : "Structured flow",
+        auto === "VBA" ? "Fast in Excel" : (auto.includes("Script") ? "Cloud automation" : "No-code logic")
       ];
-      const systems = [
-        { id:"finance", label:"Finance dashboard" },
-        { id:"hr", label:"HR onboarding" },
-        { id:"expense", label:"Expense tracker" },
-        { id:"kpi", label:"Sheets KPI system" }
-      ];
-      const autos = [
-        { id:"vba", label:"VBA" },
-        { id:"pq", label:"Power Query" },
-        { id:"gas", label:"Apps Script" }
-      ];
+      rChips.innerHTML = chips.map(c => `<span class="chip">${c}</span>`).join("");
 
-      const painRow = document.getElementById("painRow");
-      const sysRow  = document.getElementById("sysRow");
-      const autoRow = document.getElementById("autoRow");
-      const recipe  = document.getElementById("recipe");
-      const dashBody= document.getElementById("dashBody");
-      const randomizeBtn = document.getElementById("randomizeBtn");
+      // mini numbers just to feel “alive”
+      const rev = 11000 + Math.floor(Math.random()*4000);
+      const exp = 6500 + Math.floor(Math.random()*2500);
+      const net = rev - exp;
+      document.getElementById('mRev').textContent = `$${rev.toLocaleString()}`;
+      document.getElementById('mExp').textContent = `$${exp.toLocaleString()}`;
+      document.getElementById('mNet').textContent = `$${net.toLocaleString()}`;
+    }
 
-      let state = { pain:"manual", system:"finance", auto:"vba" };
+    [selChaos, selSystem, selAuto].forEach(el => el.addEventListener('change', render));
 
-      function makePick(row, item, groupKey){
-        const b = document.createElement("button");
-        b.className = "pick";
-        b.type = "button";
-        b.textContent = item.label;
-        b.dataset.value = item.id;
-        b.addEventListener("click", ()=>{
-          state[groupKey] = item.id;
-          render();
-        });
-        row.appendChild(b);
-      }
-
-      pains.forEach(p => makePick(painRow, p, "pain"));
-      systems.forEach(s => makePick(sysRow, s, "system"));
-      autos.forEach(a => makePick(autoRow, a, "auto"));
-
-      function nice(id){
-        const all = [...pains, ...systems, ...autos];
-        const hit = all.find(x=>x.id===id);
-        return hit ? hit.label : id;
-      }
-
-      function rnd(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
-      function pct(){ return rnd(12, 88) + "%"; }
-
-      function render(){
-        // Toggle active buttons
-        document.querySelectorAll(".pick").forEach(btn=>{
-          const parentId = btn.parentElement.id;
-          const key = parentId === "painRow" ? "pain" : parentId === "sysRow" ? "system" : "auto";
-          btn.classList.toggle("active", btn.dataset.value === state[key]);
-        });
-
-        // Build recipe text
-        const painText = nice(state.pain);
-        const sysText  = nice(state.system);
-        const autoText = nice(state.auto);
-
-        const outcomes = {
-          manual: "one-click reporting + automated summaries",
-          chaos: "structured input + validation + clear table design",
-          noctrl: "dashboards + KPI tiles + reliable tracking views"
-        };
-        const deliver = {
-          finance: "cashflow view, categories, KPI tiles, monthly summary",
-          hr: "onboarding form, registry, status checks, clean UX",
-          expense: "spending by project, receipts, approvals, exports",
-          kpi: "weekly KPI capture, team view, automated totals"
-        };
-        const tool = {
-          vba: "buttons, macros, forms, automated export",
-          pq: "data pipeline, refreshable model, clean transformations",
-          gas: "automations, notifications, integrations"
-        };
-
-        recipe.innerHTML =
-          `<b style="color:var(--text)">Chaos → System → Automation</b><br><br>
-           <b>Pain:</b> ${painText}<br>
-           <b>System:</b> ${sysText}<br>
-           <b>Automation:</b> ${autoText}<br><br>
-           <b>What you get:</b> ${deliver[state.system]}<br>
-           <b>Fix:</b> ${outcomes[state.pain]}<br>
-           <b>Tech:</b> ${tool[state.auto]}`;
-
-        // Mini dashboard rows
-        const rows = [];
-        if(state.system === "finance"){
-          rows.push(["Cash In", rnd(1200, 9800), "auto categorized"]);
-          rows.push(["Cash Out", rnd(800, 8200), "validated entries"]);
-          rows.push(["Net", rnd(-1200, 4200), "dash summary"]);
-        } else if(state.system === "hr"){
-          rows.push(["New hires", rnd(1, 12), "form-driven"]);
-          rows.push(["Checklist %", pct(), "status tracking"]);
-          rows.push(["Errors", rnd(0, 6), "validation"]);
-        } else if(state.system === "expense"){
-          rows.push(["Expenses", rnd(15, 180), "receipt-ready"]);
-          rows.push(["Approval %", pct(), "workflow"]);
-          rows.push(["Over budget", pct(), "alerts"]);
-        } else {
-          rows.push(["KPI avg", pct(), "team view"]);
-          rows.push(["On-track", pct(), "weekly rollup"]);
-          rows.push(["Missed", pct(), "auto reminders"]);
-        }
-
-        // Add “automation flavor”
-        const flavor = state.auto === "vba" ? "buttons & forms" :
-                       state.auto === "pq" ? "refreshable model" : "automations & integrations";
-        rows.push(["Automation", flavor, "selected"]);
-
-        dashBody.innerHTML = rows.map(r =>
-          `<tr><td><b style="color:var(--text)">${r[0]}</b></td><td>${r[1]}</td><td>${r[2]}</td></tr>`
-        ).join("");
-      }
-
-      randomizeBtn.addEventListener("click", ()=>{
-        state.pain = pains[rnd(0, pains.length-1)].id;
-        state.system = systems[rnd(0, systems.length-1)].id;
-        state.auto = autos[rnd(0, autos.length-1)].id;
-        render();
-      });
-
+    document.getElementById('presetBtn').addEventListener('click', () => {
+      selChaos.value = "Manual reports";
+      selSystem.value = "Finance dashboard";
+      selAuto.value = "VBA";
       render();
-    })();
+    });
 
-    document.getElementById("year").textContent = new Date().getFullYear();
+    document.getElementById('randomBtn').addEventListener('click', () => {
+      const pick = (sel) => sel.options[Math.floor(Math.random()*sel.options.length)].value;
+      selChaos.value = pick(selChaos);
+      selSystem.value = pick(selSystem);
+      selAuto.value = pick(selAuto);
+      render();
+    });
+
+    render();
+
+    // =========================
+    // Helpers
+    // =========================
+    document.getElementById('y').textContent = new Date().getFullYear();
+
+    function copyText(t){
+      navigator.clipboard.writeText(t).then(() => {
+        alert("Copied: " + t);
+      });
+    }
+    window.copyText = copyText;
   </script>
 </body>
 </html>
